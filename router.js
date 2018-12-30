@@ -1,4 +1,4 @@
-const Authentication = require("./controllers/authentication");
+const Authentication = require("./controllers/authController");
 
 module.exports = app => {
   app.get("/", (req, res, next) => {
