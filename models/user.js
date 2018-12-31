@@ -25,6 +25,13 @@ userSchema.pre("save", function(next) { // "before this model is saved, run func
   next(); // save model now
 })
 
+// all users created by userSchema have access to the method comparePassword
+userSchema.methods.comparePassword = function(candidatePassword, callback) {
+  const isMatch = bcrypt.compareSync(candidatePassword, this.password);
+  console.log("checking if password matches:", isMatch);
+  callback(null, isMatch);
+}
+
 const ModelClass = mongoose.model("user", userSchema);
 
 module.exports = ModelClass;

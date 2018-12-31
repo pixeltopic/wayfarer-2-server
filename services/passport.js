@@ -4,6 +4,34 @@ const keys = require("../config/keys");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 
+const LocalStrategy = require("passport-local");
+
+// Local Login
+const localOptions = { 
+  usernameField: "email" 
+};
+
+const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+  // verify username & password, call `done` with user if true if correct
+  // else call `done` with false
+  User.findOne({ email: email }, (err, user) => {
+    if (err) { return done(err); }
+
+    if (!user) {
+      return done(null, false);
+    }
+    console.log("comparing passwords now");
+    user.comparePassword(password, (err, isMatch) => {
+      if (err) { return done(err); }
+      if (!isMatch) { return done(null, false); }
+
+      return done(null, user);
+    });
+  });
+});
+
+// Jwt Login
+
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader("authorization"), // extracts `authorization` header from post request, etc. Decode jwt in header with `secretOrKey`
   secretOrKey: keys.userSecret
@@ -26,3 +54,4 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
 // connect passport jwt strategy to passport
 
 passport.use(jwtLogin);
+passport.use(localLogin);

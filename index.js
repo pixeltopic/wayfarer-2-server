@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 
 const keys = require("./config/keys");
 
+// cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
 // Db setup
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
 

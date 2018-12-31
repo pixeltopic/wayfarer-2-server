@@ -8,6 +8,13 @@ const tokenForUser = user => {
   return jwt.encode({ sub: user.id, iat: timestamp }, keys.userSecret);
 }
 
+exports.signin = (req, res, next) => {
+  // run when passport finishes authenticating email/password.
+  // give user a token
+  // accesses user.id allowed because passport supplies a `done` callback; we returned a found user with done(null, user); access via req.user
+  res.send({ token: tokenForUser(req.user) });
+}
+
 exports.signup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
