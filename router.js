@@ -1,3 +1,4 @@
+require("./services/passport");
 
 module.exports = app => {
 

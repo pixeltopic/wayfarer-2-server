@@ -1,5 +1,5 @@
 const authController = require("../controllers/authController");
-const passportService = require("../services/passport");
+// const passportService = require("../services/passport");
 const passport = require("passport");
 
 const requireAuth = passport.authenticate("jwt", { session: false }); // deny session based cookies (is set by default)

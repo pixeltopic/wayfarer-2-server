@@ -12,7 +12,7 @@ const jwtOptions = {
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   // See if userID in payload exists in our database
   // if so, call `done` callback with user object else call `done` with false.
-  User.findById(payload.subdomains, (err, user) => {
+  User.findById(payload.sub, (err, user) => {
     if (err) { return done(err, false); }
 
     if (user)  {
