@@ -11,6 +11,6 @@ module.exports = app => {
   });
 
   app.post("/api/checkheaders", validateKey, (req,res,next) => {
-    res.send({ requiredHeaders: "success" });
+    res.send({ requiredHeaders: "success", middlewareStat: req.middlewareStatus });
   })
 }

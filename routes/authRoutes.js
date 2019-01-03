@@ -8,6 +8,7 @@ const requireSignin = passport.authenticate("local", { session: false });
 module.exports = app => {
 
   app.get("/api/checkauth", requireAuth, (req, res) => {
+    // development method to check if user's token is still valid.
     res.send({ authorization: "success" });
   })
 

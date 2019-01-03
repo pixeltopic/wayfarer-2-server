@@ -1,11 +1,12 @@
-const jwt = require("jwt-simple");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const keys = require("../config/keys");
 
 const tokenForUser = user => {
   // generates a jwt based on userSecret
-  const timestamp = new Date().getTime();
-  return jwt.encode({ sub: user.id, iat: timestamp }, keys.userSecret);
+  // const timestamp = new Date().getTime();
+  // return jwt.encode({ sub: user.id, iat: timestamp }, keys.userSecret);
+  return jwt.sign({ sub: user.id }, keys.userSecret, { expiresIn: keys.tokenExpiryTime });
 }
 
 exports.signin = (req, res, next) => {

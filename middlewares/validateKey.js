@@ -5,5 +5,6 @@ module.exports = (req, res, next) => {
   if (req.headers.key !== keys.key) {
     return res.status(403).send({ error: "invalid api key" });
   }
+  req.middlewareStatus = "passed";
   next();
 }
