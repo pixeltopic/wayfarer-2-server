@@ -19,6 +19,6 @@ module.exports = app => {
 
   app.post("/api/checkheaders", validateKey, refreshToken, verifyToken, (req,res,next) => {
     // development route for testing middlewares.
-    res.send({ requiredHeaders: "success", auth: req.auth });
+    res.send({ requiredHeaders: "success", refreshedToken: req.auth });
   })
 }

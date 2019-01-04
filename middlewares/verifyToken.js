@@ -7,20 +7,22 @@ module.exports = (req, res, next) => {
   console.log("refreshedtoken:", req.refreshedToken);
 
   if (!req.headers.authorization && !req.refreshedToken) {
-    return res.status(403).send({ error: "Authorization expired"});
+    return res.status(403).send({ error: "Authorization expired."});
   }
   if (req.refreshedToken) {
-    jwt.verify(req.refreshedToken, keys.userSecret, (err, decoded) => {
-      if (err) { 
-        return res.status(403).send({ error: "Authorization expired (1)"}); 
-      }
-    });
+    try {
+      jwt.verify(req.refreshedToken, keys.userSecret);
+    } catch(e) {
+      return res.status(403).send({ error: "Authorization expired. Refreshed token inactive."});
+    }
+    
   } else {
-    jwt.verify(req.headers.authorization, keys.userSecret, (err, decoded) => {
-      if (err) { 
-        return res.status(403).send({ error: "Authorization expired (2)"}); 
-      }
-    });
+    try {
+      jwt.verify(req.headers.authorization, keys.userSecret);
+    } catch(e) {
+      return res.status(403).send({ error: "Authorization expired. Token invalid for refresh."});
+    }
+    
   }
 
   
