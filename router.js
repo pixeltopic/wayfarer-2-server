@@ -27,7 +27,9 @@ module.exports = app => {
     // refreshedToken undefined: still valid
     // "": invalid forever
     // "non empty string": new refreshed token
-    if (req.auth === "") {
+    if (req.noAuth) {
+      res.status(403).send({ error: "User is not authenticated." });
+    } else if (req.auth === "") {
       res.send({ message: "Provided token cannot be refreshed", refreshedToken: req.auth });
     } else if (!req.auth) {
       res.send({ message: "Provided token has not expired" });

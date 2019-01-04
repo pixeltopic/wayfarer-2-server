@@ -6,6 +6,10 @@ module.exports = (req, res, next) => {
   console.log("authorization header:", req.headers.authorization);
   console.log("refreshedtoken:", req.refreshedToken);
 
+  if (req.noAuth) {
+    return res.status(403).send({ error: "Unauthorized."});
+  }
+
   if (!req.headers.authorization && !req.refreshedToken) {
     return res.status(403).send({ error: "Authorization expired."});
   }

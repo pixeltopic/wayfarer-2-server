@@ -7,7 +7,9 @@ module.exports = async (req, res, next) => {
   // if jwt expired under x minutes ago, allow refresh.
   // if not, do not allow refresh.
   if (!req.headers.authorization) {
-    return res.status(403).send({ error: "Authorization key not provided." });
+    req.noAuth = true; // allows controller or succeeding middlewares to handle if user is not authenticated
+    next(); // if auth key not provided, user is not logged in and using a public route.
+    return;
   }
 
   const now = Math.ceil(new Date().getTime() / 1000);
