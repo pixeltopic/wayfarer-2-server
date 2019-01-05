@@ -7,6 +7,7 @@ const verifyToken = require("./middlewares/verifyToken");
 module.exports = app => {
 
   require("./routes/authRoutes")(app);
+  require("./routes/mapsRoutes")(app);
 
   app.get("/", (req, res, next) => {
     res.send("Wayfarer 2 api");
