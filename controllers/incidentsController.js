@@ -8,6 +8,7 @@ exports.fetchIncidents = async (req, res, next) => {
   
   if (!req.body.routes) {
     res.status(400).send({ error: "Directions data from Google Api required." });
+    return;
   }
   const fetchedDirectionData = req.body.routes;
 

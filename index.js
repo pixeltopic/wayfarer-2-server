@@ -16,7 +16,7 @@ mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
 
 // App Setup (middlewares and route instantiation)
 app.use(morgan("combined"));
-app.use(bodyParser.json({ type: "*/*" }));
+app.use(bodyParser.json({ type: "*/*", limit: '10mb' }));
 app.use(cors({ origin: keys.origin }));
 router(app);
 

@@ -51,7 +51,7 @@ const genSegmentObj = (latLngArr) => {
   // latlngs for a bounding box. The bounding box is the fewest number of < 50k square mile segments.
 
   let result = [];
-  const kmSq = 129499;
+  const kmSq = 125000;
   let tempArr = latLngArr;
   let corner1, corner2, length, width, i, prev = 0;
 
@@ -112,7 +112,15 @@ const fetchIncidents = async (routeNum, stepNum, segObj, latLngData) => {
   // make the API call for that single segment.
   const MAPQUEST_ROOT_URL = "http://www.mapquestapi.com/traffic/v2/incidents";
   const MAPQUEST_URL = `${MAPQUEST_ROOT_URL}?key=${keys.mapquestKey}&boundingBox=${segObj.corner1.lat},${segObj.corner1.lng},${segObj.corner2.lat},${segObj.corner2.lng}&filters=construction,incidents,event,congestion`;
-  return await axios.get(MAPQUEST_URL).then(request => ({ request, routePayload: routeNum, stepPayload: stepNum, latLngQueue: latLngData, segObj: segObj }));
+  try {
+    const response = await axios.get(MAPQUEST_URL).then(request => ({ request, routePayload: routeNum, stepPayload: stepNum, latLngQueue: latLngData, segObj: segObj }));
+    return response;
+  } catch (e) {
+    console.log(e.response.data);
+    console.log(`Mapquest Fetch error on routeNum: ${routeNum}, segObj:`, segObj);
+    return null;
+  }
+  
 }
 
 const processFetchedIncidents = (fetchedIncidents) => {
@@ -154,8 +162,8 @@ exports.updateFullIncident = async (data) => {
     for (let stepNum in fullSegmentObj[routeNum]) {
       
       const fetchedIncidents = await fetchIncidents(routeNum, stepNum, fullSegmentObj[routeNum][stepNum], genUniqueLatLngQueue(data[routeNum]));
-
-      result = { ...result, ...processFetchedIncidents(fetchedIncidents) };
+      if (fetchedIncidents)
+        result = { ...result, ...processFetchedIncidents(fetchedIncidents) };
 
       
     }
