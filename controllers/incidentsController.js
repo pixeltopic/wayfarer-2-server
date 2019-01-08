@@ -1,6 +1,6 @@
 const axios = require("axios");
 const keys = require("../config/keys");
-const { updateFullIncident, genFullSegObj } = require("../utils/incidentUtils");
+const { updateFullIncident, genFullSegObj } = require("../utils/incidentsUtils");
 
 // const tempIncidentData = require("../utils/tempIncidentData");
 
