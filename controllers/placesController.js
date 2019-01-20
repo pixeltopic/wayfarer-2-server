@@ -11,7 +11,7 @@ exports.fetchPlaces = async (req, res, next) => {
     console.log("Geocoded response:", geocodedResponse.data);
 
     if (geocodedResponse.data && geocodedResponse.data.results.length === 0) {
-      res.send({ places: { results: [] }, refreshedToken: req.auth });
+      res.send({ places: { results: [], center: null }, refreshedToken: req.auth });
       return;
     }
     
@@ -33,7 +33,7 @@ exports.fetchPlaces = async (req, res, next) => {
 
     const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
 
-    res.send({ places: placesResponse.data, refreshedToken: req.auth });
+    res.send({ places: { ...placesResponse.data, center: geocodedResponse.data.results[0].geometry.location }, refreshedToken: req.auth });
 
   } catch(e) {
     console.log(e);
