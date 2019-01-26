@@ -40,3 +40,18 @@ exports.fetchPlaces = async (req, res, next) => {
     res.status(400).send({ error: "Lookup failed." });
   }
 }
+
+exports.fetchPlaceDetails = async (req, res, next) => {
+  const { place_id } = req.body;
+
+  try {
+    const response = await googleMaps.get(`/place/details/json?placeid=${place_id}&key=${keys.googleKey}`);
+
+    res.send({ placeDetails: response.data.result, refreshedToken: req.auth });
+
+  } catch(e) {
+    console.log(e);
+    res.status(400).send({ error: "Lookup failed." });
+  }
+
+}
