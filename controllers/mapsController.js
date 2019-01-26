@@ -10,7 +10,7 @@ const GOOGLE_PLACE_PHOTOS_ROOT_URL = "https://maps.googleapis.com/maps/api/place
 exports.fetchDirections = async (req, res, next) => {
   const { altRoutes, avoidFerries, avoidHighways, avoidIndoor, avoidTolls, destination, mode, origin, units } = req.body;
 
-  let BUILDURL = `${GOOGLE_ROOT_URL}json?origin=${origin}&destination=${destination}
+  let BUILDURL = `${GOOGLE_ROOT_URL}json?origin=${origin.replace(/#(?=\S)/g, '')}&destination=${destination.replace(/#(?=\S)/g, '')}
     &mode=${mode}&alternatives=${altRoutes}&units=${units}`;
 
     let avoidArr = [];
@@ -28,6 +28,7 @@ exports.fetchDirections = async (req, res, next) => {
     } catch(e) {
       console.log("Error in fetchDirections:", e);
       res.status(400).send({ error: "Lookup failed." });
+      next();
     }
     
 

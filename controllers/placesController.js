@@ -38,6 +38,7 @@ exports.fetchPlaces = async (req, res, next) => {
   } catch(e) {
     console.log(e);
     res.status(400).send({ error: "Lookup failed." });
+    next();
   }
 }
 
@@ -52,6 +53,7 @@ exports.fetchPlaceDetails = async (req, res, next) => {
   } catch(e) {
     console.log(e);
     res.status(400).send({ error: "Lookup failed." });
+    next();
   }
 
 }
