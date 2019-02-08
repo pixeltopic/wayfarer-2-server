@@ -6,5 +6,6 @@ module.exports = {
   inactiveTokenTime: process.env.INACTIVE_TOKEN_TIME, // determines how long before an inactive token can no longer be refreshed.
   mongoURI: process.env.MONGO_URI,
   googleKey: process.env.GOOGLE_KEY, // google api key
-  mapquestKey: process.env.MAPQUEST_KEY // mapquest incidents key
+  mapquestKey: process.env.MAPQUEST_KEY, // mapquest incidents key
+  witaiKey: process.env.WITAI_KEY
 }

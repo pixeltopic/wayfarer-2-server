@@ -10,6 +10,7 @@ module.exports = app => {
   require("./routes/mapsRoutes")(app);
   require("./routes/incidentsRoutes")(app);
   require("./routes/placesRoutes")(app);
+  require("./routes/queryRoutes")(app);
 
   app.get("/", (req, res, next) => {
     res.send("Wayfarer 2 api");
