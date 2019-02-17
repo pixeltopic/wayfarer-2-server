@@ -123,7 +123,7 @@ const fetchIncidents = async (routeNum, stepNum, segObj, latLngData) => {
   
 }
 
-const processFetchedIncidents = (fetchedIncidents) => {
+const processFetchedIncidents = (fetchedIncidents, radius=null) => {
   const { routePayload, request, latLngQueue, segObj } = fetchedIncidents;
 
   const segObjBoundingBox = getBoundingBox(
@@ -137,9 +137,9 @@ const processFetchedIncidents = (fetchedIncidents) => {
   });
 
   const filteredIncidents = request.data.incidents.filter((incident) => {
-    // if incident is within 5000 meters of any step, retain it.
+    // if incident is within 5000 meters (or specified radius) of any step, retain it.
     for (let i = 0; i < filteredSteps.length; i++) {
-      if (getDistance({lat: filteredSteps[i].lat, lng: filteredSteps[i].lng}, incident) <= 5000) {
+      if (getDistance({lat: filteredSteps[i].lat, lng: filteredSteps[i].lng}, incident) <= (!radius || radius > 24140 ? 5000 : radius) ) {
         return true;
       }
     }
@@ -151,9 +151,10 @@ const processFetchedIncidents = (fetchedIncidents) => {
   return { [routePayload]: filteredIncidents };
 }
 
-exports.updateFullIncident = async (data) => {
-  // given object returned by genSegmentObj, fire actions for every single possible segement
-  // in every route
+exports.updateFullIncident = async (data, radius=null) => {
+  // data: Google Maps directions from fetchDirections. Array of routes
+  // radius: optional parameter. Accepts a value in meters and uses that to find incidents within that range.
+  // radius must be no greater than 24140 meters (which is about 15 miles)
 
   let result = {};
 
@@ -163,7 +164,7 @@ exports.updateFullIncident = async (data) => {
       
       const fetchedIncidents = await fetchIncidents(routeNum, stepNum, fullSegmentObj[routeNum][stepNum], genUniqueLatLngQueue(data[routeNum]));
       if (fetchedIncidents)
-        result = { ...result, ...processFetchedIncidents(fetchedIncidents) };
+        result = { ...result, ...processFetchedIncidents(fetchedIncidents, radius) };
 
       
     }

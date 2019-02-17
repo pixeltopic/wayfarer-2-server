@@ -1,10 +1,7 @@
 const mapquest = require("../api/mapquest");
-// const googleMaps = require("../api/googleMaps");
 const keys = require("../config/keys");
 const GeoPoint = require("../utils/geopoint");
-const { updateFullIncident, genFullSegObj } = require("../utils/incidentsUtils");
-
-// const tempIncidentData = require("../utils/tempIncidentData");
+const { updateFullIncident } = require("../utils/incidentsUtils");
 
 exports.fetchIncidents = async (req, res, next) => {
   
@@ -12,7 +9,7 @@ exports.fetchIncidents = async (req, res, next) => {
     res.status(400).send({ error: "Directions data from Google Api required." });
     return;
   }
-  const fetchedDirectionData = req.body.routes;
+  const { routes: fetchedDirectionData, extraParams } = req.body;
 
   const { start_location: { lat: startLat, lng: startLng }, end_location: { lat: endLat, lng: endLng } } = fetchedDirectionData[0].legs[0];
 
@@ -23,32 +20,43 @@ exports.fetchIncidents = async (req, res, next) => {
     return;
   }
 
-  // console.log(genFullSegObj(fetchedDirectionData));
+  if (extraParams.radius && extraParams.units) {
+    console.log("\nFinding Incidents with extra params:", extraParams, "\n");
+    const { radius, units } = extraParams;
+    const radiusInMeters = units === "imperial" ? parseFloat(radius) * 1609 : parseFloat(radius) * 1000; // calculates radius in meters
 
-  const incidents = await updateFullIncident(fetchedDirectionData);
+    const incidents = await updateFullIncident(fetchedDirectionData, radiusInMeters);
 
-  res.send(incidents);
+    res.send(incidents);
+    return;
+  } else {
+    const incidents = await updateFullIncident(fetchedDirectionData);
+
+    res.send(incidents);
+    return;
+  }
 
 }
 
 const fetchPlaceIncidents = async (req, res, next) => {
   // returns incidents around a single location.
-  const fetchedDirectionData = req.body.routes;
+  const { routes: fetchedDirectionData, extraParams } = req.body;
 
   try {
-    // const geocodedResponse = await googleMaps.get(`/geocode/json?address=${address}&key=${keys.googleKey}`);
-
-    // console.log("Geocoded response:", geocodedResponse.data);
-
-    // if (geocodedResponse.data && geocodedResponse.data.results.length === 0) {
-    //   res.send({ places: { results: [], center: null }, refreshedToken: req.auth });
-    //   return;
-    // }
-    // const { lat: geocodedLat, lng: geocodedLng } = geocodedResponse.data.results[0].geometry.location;
     const { start_location: { lat, lng } } = fetchedDirectionData[0].legs[0];
 
     const center = new GeoPoint(lat, lng);
-    const boundingBox = center.boundingCoordinates(3); // look for all incidents within 3 miles
+
+    let distFromCenter = 3; // in miles.
+    if (extraParams.radius && extraParams.units) {
+      const { radius, units } = extraParams;
+      if (units === "imperial")
+        distFromCenter = parseFloat(radius);
+      else
+        distFromCenter = parseFloat(radius) * 0.621;
+    }
+
+    const boundingBox = center.boundingCoordinates(distFromCenter); // look for all incidents within x miles
 
     const mapquestParams = { 
       params: {
@@ -64,7 +72,9 @@ const fetchPlaceIncidents = async (req, res, next) => {
     return;
 
   } catch(e) {
-
+    console.log(e)
+    next();
+    return;
   }
 
 }

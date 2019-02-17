@@ -67,6 +67,7 @@ const processIncidents = ({ entities }) => {
 const processPlaces = ({ entities, _text }) => {
   // given response from wit ai, returns a radius, keyword, and units specified by query.
   // Also includes radius validity checking with respect to units.
+  // *Also allow users to specify address instead of their current location in the future
   const response = {
     radius: "0",
     keyword: "",
@@ -121,8 +122,8 @@ exports.processQuery = async (req, res, next) => {
 
     console.log("response of witai:", response.data);
 
-    const intent = response.data.entities.intent[0].value;
-    console.log("intent:", intent === "directions");
+    const intent = response.data.entities.intent ? response.data.entities.intent[0].value : "";
+    // console.log("intent:", intent === "directions");
 
     if (intent !== "places" && intent !== "incidents" && intent !== "directions") {
       res.send({ error: "Sorry, can you be more specific?" });
@@ -136,7 +137,7 @@ exports.processQuery = async (req, res, next) => {
         res.send({ error: "Sorry, can you be more specific?" })
         return;
       }
-      res.send({ route: processedQuery, type: "directions" });
+      res.send({ queryParams: processedQuery, queryType: "directions" });
       return;
 
     } else if (intent === "incidents") {
@@ -150,7 +151,7 @@ exports.processQuery = async (req, res, next) => {
         res.send({ error: "Sorry, can you be more specific?" })
         return;
       }
-      res.send({ route: processedQuery, type: "incidents" });
+      res.send({ queryParams: processedQuery, queryType: "incidents" });
       return;
 
     } else if (intent === "places") {
@@ -160,7 +161,7 @@ exports.processQuery = async (req, res, next) => {
         return;
       }
 
-      res.send({ route: processedQuery, type: "places", currentLocation });
+      res.send({ queryParams: processedQuery, queryType: "places", currentLocation });
       return;
     }
 
@@ -168,5 +169,6 @@ exports.processQuery = async (req, res, next) => {
     console.log("Error in processQuery:", e);
     res.status(400).send({ error: "Query failed." });
     next();
+    return;
   }
 }
