@@ -43,6 +43,10 @@ const processIncidents = ({ entities }) => {
     // handling one specified location
     response.origin = entities.location[0].value;
     response.destination = entities.location[0].value;
+  } else if (entities.local_search_query && !entities.origin && !entities.destination) {
+    // handling one specified location
+    response.origin = entities.local_search_query[0].value;
+    response.destination = entities.local_search_query[0].value;
   } else if (!entities.location && entities.origin && entities.destination) {
     // handling an explicit start and end point
     response.origin = entities.origin[0].value;
@@ -87,7 +91,7 @@ const processPlaces = ({ entities, _text }) => {
       response.radius = dist;
     }
   } else {
-    response.radius = 15;
+    response.radius = 5;
     if (_text.toLowerCase().includes("farthest")) {
       response.radius = 30;
     }
@@ -107,8 +111,6 @@ exports.processQuery = async (req, res, next) => {
     res.send({ error: "Please enable location services." });
     return;
   }
-
-  const { lat, lng } = currentLocation;
 
   try {
     const response = await witai.get("", { 
