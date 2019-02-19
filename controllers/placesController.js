@@ -73,7 +73,7 @@ exports.fetchPlaceDetails = async (req, res, next) => {
   try {
     const response = await googleMaps.get(`/place/details/json?placeid=${place_id}&key=${keys.googleKey}`);
 
-    res.send({ placeDetails: response.data.result, refreshedToken: req.auth });
+    res.send({ placeDetails: { result: response.data.result, place_id }, refreshedToken: req.auth });
 
   } catch(e) {
     console.log(e);
