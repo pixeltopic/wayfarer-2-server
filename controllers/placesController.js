@@ -4,6 +4,29 @@ const keys = require("../config/keys");
 exports.fetchPlaces = async (req, res, next) => {
 
   const { keyword, type, radius, minprice, maxprice, units, address } = req.body;
+
+  if (req.body.next_page_token) {
+    // Page token to fetch additional results.
+    const placesParams = {
+      params: {
+        pagetoken: req.body.next_page_token,
+        key: keys.googleKey
+      }
+    }
+    try {
+      const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
+
+      res.send({ places: { ...placesResponse.data }, refreshedToken: req.auth });
+      return;
+
+    } catch(e) {
+      console.log(e);
+      res.status(400).send({ error: "Lookup failed." });
+      next();
+      return;
+    }
+  }
+
   let currentLocation = null;
   if (req.body.currentLocation) { 
     // optional prop in post request. Used if the user wants to use their current location using browser geolocation
@@ -54,11 +77,6 @@ exports.fetchPlaces = async (req, res, next) => {
 
       return;
     }
-
-    
-
-    
-
   } catch(e) {
     console.log(e);
     res.status(400).send({ error: "Lookup failed." });
