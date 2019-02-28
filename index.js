@@ -11,7 +11,13 @@ const keys = require("./config/keys");
 
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
 // Db setup
-mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
+mongoose.connect(keys.mongoURI, { 
+  useNewUrlParser: true,
+  // sets how many times to try reconnecting (will be used if connection is interrupted)
+  reconnectTries: 10,
+  // sets the delay between every retry (milliseconds)
+  reconnectInterval: 1000 
+});
 
 
 // App Setup (middlewares and route instantiation)
