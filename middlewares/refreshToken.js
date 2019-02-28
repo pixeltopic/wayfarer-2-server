@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const keys = require("../config/keys");
+const mongoose = require("mongoose");
 
 module.exports = async (req, res, next) => {
   // middleware to ensure that the jwt is valid.
@@ -22,7 +23,7 @@ module.exports = async (req, res, next) => {
     return res.status(403).send({ error: "Invalid token." });
   }
 
-  if (decoded.sub.match(/^[0-9a-fA-F]{24}$/)) {
+  if (mongoose.Types.ObjectId.isValid(decoded.sub)) {
     // Yes, it's a valid ObjectId, proceed with `countDocuments` call.
     await User.countDocuments({ _id: decoded.sub }, (err, count) => {
       if (err) { 
@@ -45,7 +46,9 @@ module.exports = async (req, res, next) => {
       }
     });
   } else {
-    return res.status(403).send({ error: "Invalid token format." });
+    res.status(403).send({ error: "Invalid token format." });
+    req.abort();
+    return;
   }
   next();
 }
