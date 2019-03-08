@@ -12,8 +12,7 @@ exports.fetchDirections = async (req, res, next) => {
     mode, 
     origin, 
     units, 
-    currentLocation, // lat lng pair
-    useCurrentLocation // boolean deciding to use `origin` or currentLocation for search
+    currentLocation, // lat lng pair. may or may not be present
   } = req.body;
   // useCurrentLocation, if true, will prioritize currentLocation over inputted origin.
 
@@ -26,13 +25,13 @@ exports.fetchDirections = async (req, res, next) => {
 
   try {
 
-    if (altRoutes === undefined || !destination || !mode || (!origin && !useCurrentLocation) || !units || (useCurrentLocation && !currentLocation)) {
+    if (altRoutes === undefined || !destination || !mode || (!origin && !currentLocation) || !units) {
       res.status(400).send({ error: "Missing required attributes for search. Try to refresh." });
       return;
     }
 
     let newOrigin;
-    if (useCurrentLocation) {
+    if (currentLocation) {
       console.log("Using current location");
       const revGeoRes = await googleMaps.get(`/geocode/json?latlng=${currentLocation.lat},${currentLocation.lng}&key=${keys.googleKey}`);
       newOrigin = revGeoRes.data.results[0].formatted_address;
@@ -53,10 +52,17 @@ exports.fetchDirections = async (req, res, next) => {
     }
 
     const response = await googleMaps.get("/directions/json", mapsParams);
+    
+    const getData = response.data.routes[0].legs[0];
 
-
-
-    res.send({ directions: { ...response.data, origin: newOrigin, destination }, refreshedToken: req.auth });
+    res.send({ 
+      directions: { 
+        ...response.data, 
+        origin: getData.start_address || newOrigin, 
+        destination: getData.end_address || destination 
+      }, 
+      refreshedToken: req.auth
+    });
 
     return;
 

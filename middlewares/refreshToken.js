@@ -46,8 +46,7 @@ module.exports = async (req, res, next) => {
       }
     });
   } else {
-    res.status(403).send({ error: "Invalid token format." });
-    req.abort();
+    res.set("Connection", "close").status(403).send({ error: "Invalid token format. Please reauthenticate." });
     return;
   }
   next();

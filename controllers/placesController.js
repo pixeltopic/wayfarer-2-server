@@ -27,6 +27,12 @@ exports.fetchPlaces = async (req, res, next) => {
     }
   }
 
+  if (!address && !req.body.currentLocation) {
+    res.status(400).send({ error: "Missing required attributes for search. Try to refresh." });
+    next();
+    return;
+  }
+
   let currentLocation = null;
   if (req.body.currentLocation) { 
     // optional prop in post request. Used if the user wants to use their current location using browser geolocation
@@ -49,7 +55,7 @@ exports.fetchPlaces = async (req, res, next) => {
     };
 
     if (!currentLocation) {
-      const geocodedResponse = await googleMaps.get(`/geocode/json?address=${address}&key=${keys.googleKey}`);
+      const geocodedResponse = await googleMaps.get(`/geocode/json?address=${address.replace(/#/g, '')}&key=${keys.googleKey}`);
 
       console.log("Geocoded response:", geocodedResponse.data);
 
