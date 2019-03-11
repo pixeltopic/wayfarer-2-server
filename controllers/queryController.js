@@ -115,7 +115,7 @@ exports.processQuery = async (req, res, next) => {
   try {
     const response = await witai.get("", { 
       params: { 
-        q: clientQuery.replace(/#(?=\S)/g, ''), 
+        q: clientQuery.replace(/#/g, ''), 
         // verbose: true, 
         n: 1,
         // context: {"timezone":"America/Los_Angeles","locale": "en_US"}

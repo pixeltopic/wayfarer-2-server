@@ -41,8 +41,8 @@ exports.fetchDirections = async (req, res, next) => {
 
     const mapsParams = {
       params: {
-        origin: newOrigin.replace(/#(?=\S)/g, ''),
-        destination: destination.replace(/#(?=\S)/g, ''),
+        origin: newOrigin.replace(/#/g, ''),
+        destination: destination.replace(/#/g, ''),
         mode,
         alternatives: altRoutes,
         units,
@@ -53,7 +53,7 @@ exports.fetchDirections = async (req, res, next) => {
 
     const response = await googleMaps.get("/directions/json", mapsParams);
     
-    const getData = response.data.routes[0].legs[0];
+    const getData = response.data.routes[0] ? response.data.routes[0].legs[0] : {};
 
     res.send({ 
       directions: { 

@@ -65,12 +65,20 @@ exports.fetchPlaces = async (req, res, next) => {
       }
       
       const { lat, lng } = geocodedResponse.data.results[0].geometry.location; // most relevant search result will be used
+      const { formatted_address } = geocodedResponse.data.results[0];
 
       placesParams.params.location = `${lat},${lng}`;
 
       const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
 
-      res.send({ places: { ...placesResponse.data, center: geocodedResponse.data.results[0].geometry.location }, refreshedToken: req.auth });
+      res.send({ 
+        places: { 
+          ...placesResponse.data, 
+          center: geocodedResponse.data.results[0].geometry.location,
+          address: formatted_address
+        }, 
+        refreshedToken: req.auth 
+      });
 
       return;
     } else {
@@ -78,8 +86,17 @@ exports.fetchPlaces = async (req, res, next) => {
       placesParams.params.location = `${lat},${lng}`;
 
       const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
+      const revGeoRes = await googleMaps.get(`/geocode/json?latlng=${lat},${lng}&key=${keys.googleKey}`);
+      const { formatted_address } = revGeoRes.data.results[0];
 
-      res.send({ places: { ...placesResponse.data, center: currentLocation }, refreshedToken: req.auth });
+      res.send({ 
+        places: { 
+          ...placesResponse.data, 
+          center: currentLocation,
+          address: formatted_address
+        }, 
+        refreshedToken: req.auth 
+      });
 
       return;
     }
