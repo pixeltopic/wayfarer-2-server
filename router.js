@@ -31,14 +31,15 @@ module.exports = app => {
     // refreshedToken undefined: still valid
     // "": invalid forever
     // "non empty string": new refreshed token
+    // console.log("console logging req.auth:", req.auth)
     if (req.noAuth) {
-      res.status(403).send({ error: "User is not authenticated." });
+      return res.status(403).send({ error: "User is not authenticated." });
     } else if (req.auth === "") {
-      res.send({ message: "Provided token cannot be refreshed", refreshedToken: req.auth });
-    } else if (!req.auth) {
-      res.send({ message: "Provided token has not expired" });
+      return res.send({ message: "Provided token cannot be refreshed", refreshedToken: req.auth });
+    } else if (req.auth === undefined) {
+      return res.send({ message: "Provided token has not expired" });
     } else {
-      res.send({ message: "Token refreshed", refreshedToken: req.auth });
+      return res.send({ message: "Token refreshed", refreshedToken: req.auth });
     }
   });
 }
