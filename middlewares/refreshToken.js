@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
   const now = Math.ceil(new Date().getTime() / 1000);
 
   const decoded = jwt.decode(req.headers.authorization);
-  console.log("\ndecoded jwt:", decoded, "\ncurrent time:", now, "\nnow - decoded jwt expiry time. If positive, it is expired.", now - decoded.exp);
+  console.log("decoded jwt:\n", decoded, "\ncurrent time:", now, "\nnow - decoded jwt expiry time. If positive, it is expired:", now - decoded.exp);
 
   if (!decoded) {
     // if invalid jwt cannot be decoded) will be null
@@ -31,9 +31,9 @@ module.exports = async (req, res, next) => {
         // ensure that there is exactly one user matching the decoded id.
         if (count === 1) {
           // token is expired, enter this block
-          // console.log("count was one");
+          
           if (now > decoded.exp) {
-            console.log("token is currently expired");
+            console.log("token is currently expired.");
             if (now - decoded.exp < Number(keys.inactiveTokenTime)) { // if it has been less than x seconds of inactivity, refresh token
               const newToken = jwt.sign({ sub: decoded.sub }, keys.userSecret, { expiresIn: keys.tokenExpiryTime });
               req.auth = newToken;
