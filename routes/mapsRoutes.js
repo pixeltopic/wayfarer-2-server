@@ -1,4 +1,4 @@
-const mapsController = require("../controllers/mapsController");
+const mapsController = require("../controllers/directionsController");
 const refreshToken = require("../middlewares/refreshToken");
 const validateKey = require("../middlewares/validateKey");
 
