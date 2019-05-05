@@ -1,78 +1,80 @@
-const keys = require("../config/keys");
-const googleMaps = require("../api/googleMaps");
+const mapwrap = require("../api/mapwrap");
+const ErrorWrapper = require("../utils/ErrorWrapper");
+const logger = require("../utils/logger")(__filename);
 
 exports.fetchDirections = async (req, res, next) => {
-  const { 
-    altRoutes, 
-    avoidFerries, 
-    avoidHighways, 
-    avoidIndoor, 
-    avoidTolls, 
-    destination, 
-    mode, 
-    origin, 
-    units, 
-    currentLocation, // lat lng pair. may or may not be present
+  const {
+    altRoutes,
+    avoidFerries,
+    avoidHighways,
+    avoidIndoor,
+    avoidTolls,
+    destination,
+    mode,
+    origin,
+    units,
+    currentLocation // lat lng pair. may or may not be present
   } = req.body;
   // useCurrentLocation, if true, will prioritize currentLocation over inputted origin.
-
-  let avoidArr = [];
-  if (avoidTolls) avoidArr.push("tolls"); 
-  if (avoidHighways) avoidArr.push("highways");
-  if (avoidFerries) avoidArr.push("ferries");
-  if (avoidIndoor) avoidArr.push("indoor");
-  const avoidStr = avoidArr.join("|");
+  logger.info(req.body);
 
   try {
-
-    if (altRoutes === undefined || !destination || !mode || (!origin && !currentLocation) || !units) {
-      res.status(400).send({ error: "Missing required attributes for search. Try to refresh." });
-      return;
+    logger.info("Fetching directions");
+    if (
+      altRoutes === undefined ||
+      !destination ||
+      !mode ||
+      (!origin && !currentLocation) ||
+      !units
+    ) {
+      logger.error("Missing required attributes for directions search.");
+      throw new ErrorWrapper(
+        "Missing required attributes for search. Try to refresh.",
+        "directionsController",
+        400
+      );
     }
 
     let newOrigin;
     if (currentLocation) {
-      console.log("Using current location");
-      const revGeoRes = await googleMaps.get(`/geocode/json?latlng=${currentLocation.lat},${currentLocation.lng}&key=${keys.googleKey}`);
-      newOrigin = revGeoRes.data.results[0].formatted_address;
+      logger.info(`Using current location. Reverse geocoding {${lat}, ${lng}}`);
+      const { lat, lng } = { currentLocation };
+      const revGeoRes = await mapwrap.reverseGeocode(lat, lng);
+      newOrigin = revGeoRes.getTopAddress(true);
+      if (!newOrigin)
+        throw new ErrorWrapper(
+          "No address maps to current location",
+          "directionsController",
+          400
+        );
     } else {
       newOrigin = origin;
     }
 
-    const mapsParams = {
-      params: {
-        origin: newOrigin.replace(/#/g, ''),
-        destination: destination.replace(/#/g, ''),
-        mode,
-        alternatives: altRoutes,
-        units,
-        ...avoidStr && { avoid: avoidStr },
-        key: keys.googleKey
-      }
-    }
-
-    const response = await googleMaps.get("/directions/json", mapsParams);
-    
-    const getData = response.data.routes[0] ? response.data.routes[0].legs[0] : {};
-
-    res.send({ 
-      directions: { 
-        ...response.data, 
-        origin: getData.start_address || newOrigin, 
-        destination: getData.end_address || destination 
-      }, 
-      refreshedToken: req.auth
+    logger.info("Fetching directions from Google Directions");
+    const payload = await mapwrap.directions({
+      origin: newOrigin,
+      destination,
+      mode,
+      altRoutes,
+      units,
+      avoidFerries,
+      avoidTolls,
+      avoidHighways,
+      avoidIndoor
     });
 
-    return;
+    logger.info("Sending response");
 
-  } catch(e) {
-    console.log("Error in fetchDirections:", e);
-    res.status(400).send({ error: "Lookup failed." });
-    next();
-    return;
+    return res.send({
+      directions: {
+        routes: payload.getRoutes(),
+        origin: payload.getStartAddress() || newOrigin,
+        destination: payload.getEndAddress() || destination
+      },
+      refreshedToken: req.auth
+    });
+  } catch (err) {
+    return next(err); // pass error to central error handler
   }
-    
-
-    
-}
+};
