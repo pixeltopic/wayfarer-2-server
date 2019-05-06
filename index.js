@@ -7,6 +7,10 @@ const app = express();
 const router = require("./router");
 const mongoose = require("mongoose");
 const cors = require("cors");
+// custom middlewares
+const validateKey = require("./middlewares/validateKey");
+const schemaValidator = require("./middlewares/schemaValidator");
+const errorHandler = require("./middlewares/errorHandler");
 
 const keys = require("./config/keys");
 
@@ -29,8 +33,13 @@ app.use(morgan("combined", {
 }));
 app.use(bodyParser.json({ type: "*/*", limit: '10mb' }));
 app.use(cors({ origin: keys.origin }));
+
+app.use(validateKey);
+app.use(schemaValidator);
 router(app);
-app.use(require("./middlewares/errorHandler")); // important that this is defined after the router.
+
+
+app.use(errorHandler); // important that this is defined after the router.
 
 // Server Setup
 

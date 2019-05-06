@@ -4,5 +4,8 @@ const logger = require("../utils/logger")(__filename);
 module.exports = (err, req, res, next) => {
   logger.warn("Stack trace");
   logger.error(err.stack)
-  return res.status(err.getStatusCode()).send({ error: err.message || "Unlabeled error." });
+  if (err.getStatusCode)
+    return res.status(err.getStatusCode()).send({ error: err.message || "Unlabeled error." });
+  else
+    return res.status(500).send({ error: err.message || "Unlabeled error." });
 }

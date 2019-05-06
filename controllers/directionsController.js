@@ -21,11 +21,7 @@ exports.fetchDirections = async (req, res, next) => {
   try {
     logger.info("Fetching directions");
     if (
-      altRoutes === undefined ||
-      !destination ||
-      !mode ||
-      (!origin && !currentLocation) ||
-      !units
+      altRoutes === undefined || !destination || !mode || (!origin && !currentLocation) || !units
     ) {
       logger.error("Missing required attributes for directions search.");
       throw new ErrorWrapper(
@@ -37,8 +33,9 @@ exports.fetchDirections = async (req, res, next) => {
 
     let newOrigin;
     if (currentLocation) {
+      const { lat, lng } = currentLocation;
       logger.info(`Using current location. Reverse geocoding {${lat}, ${lng}}`);
-      const { lat, lng } = { currentLocation };
+      
       const revGeoRes = await mapwrap.reverseGeocode(lat, lng);
       newOrigin = revGeoRes.getTopAddress(true);
       if (!newOrigin)

@@ -33,6 +33,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/hapi__joi": "^15.0.1",
     "supervisor": "^0.12.0"
   }
 }
