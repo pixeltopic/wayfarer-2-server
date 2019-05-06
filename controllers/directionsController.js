@@ -20,16 +20,6 @@ exports.fetchDirections = async (req, res, next) => {
 
   try {
     logger.info("Fetching directions");
-    if (
-      altRoutes === undefined || !destination || !mode || (!origin && !currentLocation) || !units
-    ) {
-      logger.error("Missing required attributes for directions search.");
-      throw new ErrorWrapper(
-        "Missing required attributes for search. Try to refresh.",
-        "directionsController",
-        400
-      );
-    }
 
     let newOrigin;
     if (currentLocation) {
