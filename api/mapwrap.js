@@ -1,5 +1,6 @@
 const MapWrap = require("mapwrap");
 const keys = require("../config/keys");
+const logger = require("../utils/logger")(__filename);
 
 module.exports = MapWrap({
   DEFAULT_API_KEY: keys.googleKey,
@@ -8,10 +9,21 @@ module.exports = MapWrap({
     DIRECTIONS_API_KEY: keys.googleKey,
     PLACES_API_KEY: keys.googleKey
   }, 
+  cacheMaxItemAges: {
+    reverseGeoCache: 24 * 60 * 60000, // 1 day
+    geoCache: 24 * 60 * 60000, 
+    directionsCache: 30 * 60000, // 30 mins
+    nearbySearchCache: 60 * 60000, // 1 hour
+    placeDetailsCache: 180 * 60000, // 3 hours
+  },
+  cacheMaxSizes: {
+    reverseGeoCache: 20,
+    geoCache: 20, 
+    directionsCache: 15, 
+    nearbySearchCache: 10, 
+    placeDetailsCache: 10,
+  },
   logCache: true,
-  reverseGeoCacheSize: 20, // set the size of your LRU cache (all cache sizes are 10 by default)
-  geoCacheSize: 20, 
-  directionsCacheSize: 15, 
-  nearbySearchCacheSize: 10, 
-  placeDetailsCacheSize: 10,
+  logger: message => logger.info(message)
+  
 });
