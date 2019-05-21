@@ -26,9 +26,9 @@ exports.fetchIncidents = async (req, res, next) => {
     extraParams: { 
       radius 
     }
-  } = req.body;
+  } = res.locals.body;
   // useCurrentLocation, if true, will prioritize currentLocation over inputted origin.
-  logger.info(req.body);
+  logger.info(res.locals.body);
 
   try {
     logger.info("Fetching directions");
@@ -108,7 +108,7 @@ exports.fetchIncidents = async (req, res, next) => {
 
 const fetchPlaceIncidents = async (req, res, next, payload) => {
   // returns incidents around a single location.
-  const { extraParams: { radius }, directionSearchParams: { units } } = req.body;
+  const { extraParams: { radius }, directionSearchParams: { units } } = res.locals.body;
 
   try {
     const { start_location: { lat, lng } } = payload.getRoute().legs[0];

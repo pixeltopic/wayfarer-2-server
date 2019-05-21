@@ -14,9 +14,9 @@ exports.fetchDirections = async (req, res, next) => {
     origin,
     units,
     currentLocation // lat lng pair. may or may not be present
-  } = req.body;
+  } = res.locals.body;
   // useCurrentLocation, if true, will prioritize currentLocation over inputted origin.
-  logger.info(req.body);
+  logger.info(res.locals.body);
 
   try {
     logger.info("Fetching directions");

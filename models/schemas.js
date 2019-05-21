@@ -23,5 +23,5 @@ exports.incidentsSchema = Joi.object().keys({
   directionSearchParams: directionsSchema.required(),
   extraParams: Joi.object().keys({
     radius: Joi.number().min(0).required() // no need for units with the inclusion of units from directionsSchema
-  }).default(null)
+  }).default({})
 });
