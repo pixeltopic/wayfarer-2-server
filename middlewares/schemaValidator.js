@@ -48,7 +48,10 @@ module.exports = (req, res, next) => {
         errorMessage = "Missing or invalid attribute to retrieve place details.";
         body = schemaValidator(req.body, schemas.placeDetailsSchema, errorMessage, logger.warn);
         break;
-
+      case "/api/fetchplaces/token":
+        errorMessage = "Missing token or invalid attributes.";
+        body = schemaValidator(req.body, schemas.placesTokenSchema, errorMessage, logger.warn);
+        break;
       default:
         logger.warn("Route not found. Not validating JSON.")
     }

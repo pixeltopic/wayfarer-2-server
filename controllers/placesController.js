@@ -4,19 +4,19 @@ const mapwrap = require("../api/mapwrap");
 const logger = require("../utils").logger(__filename);
 const { convertUnitToMeters } = require("../utils").unitConversion;
 
-const fetchPlacesWithToken = async (req, res, next) => {
+exports.fetchPlacesWithToken = async (req, res, next) => {
   logger.info("Fetching next page of nearby places with token.");
 
-  const { next_page_token } = res.locals.body;
+  const { nextPageToken } = res.locals.body;
 
   try {
     // const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
-    const placesResponse = await mapwrap.additionalPlaces(next_page_token);
+    const placesResponse = await mapwrap.additionalPlaces(nextPageToken);
 
     return res.send({ 
       places: { 
         results: placesResponse.getResults(), 
-        next_page_token: placesResponse.getNextPageToken() 
+        nextPageToken: placesResponse.getNextPageToken() 
       }, 
       refreshedToken: req.auth
     });
@@ -39,12 +39,9 @@ exports.fetchPlaces = async (req, res, next) => {
     units, 
     address,
     currentLocation, // currentLocation and address may or may not be present. However, at least one will ALWAYS be present.
-    next_page_token
   } = res.locals.body;
 
-  if (next_page_token) {
-    return fetchPlacesWithToken(req, res, next);
-  }
+  
 
   // if (!address && !req.body.currentLocation) {
   //   res.status(400).send({ error: "Missing required attributes for search. Try to refresh." });
@@ -110,7 +107,7 @@ exports.fetchPlaces = async (req, res, next) => {
       return res.send({ 
         places: { 
           results: placesResponse.getResults(),
-          next_page_token: placesResponse.getNextPageToken() || null,
+          nextPageToken: placesResponse.getNextPageToken() || null,
           center: geocodedResponse.getTopAddress(),
           address: formattedAddress
         }, 
@@ -129,7 +126,7 @@ exports.fetchPlaces = async (req, res, next) => {
       res.send({ 
         places: { 
           results: placesResponse.getResults(),
-          next_page_token: placesResponse.getNextPageToken() || null,
+          nextPageToken: placesResponse.getNextPageToken() || null,
           center: currentLocation,
           address: revGeoRes.getTopAddress(true)
         }, 

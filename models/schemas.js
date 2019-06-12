@@ -40,9 +40,13 @@ exports.placesSchema = Joi.object().keys({
     lng: Joi.number().required()
   }),
   address: Joi.string(),
-  next_page_token: Joi.string()
+  
 }).or("address", "currentLocation");
 
 exports.placeDetailsSchema = Joi.object().keys({
   place_id: Joi.string().required()
+});
+
+exports.placesTokenSchema = Joi.object().keys({
+  nextPageToken: Joi.string().required()
 });

@@ -31,7 +31,7 @@ app.use(morgan("combined", {
     write: message => logger.morgan(message.trim()) 
   }
 }));
-app.use(bodyParser.json({ type: "*/*", limit: '10mb' }));
+app.use(bodyParser.json({ type: "*/*", limit: '2mb' }));
 app.use(cors({ origin: keys.origin }));
 
 app.use(validateKey);
