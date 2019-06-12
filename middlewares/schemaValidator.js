@@ -33,13 +33,22 @@ module.exports = (req, res, next) => {
   try {
     switch(req.originalUrl) {
       case "/api/fetchdirections":
-        errorMessage = "Missing required attributes for search. Try to refresh.";
+        errorMessage = "Missing or invalid attributes for search. Try to refresh.";
         body = schemaValidator(req.body, schemas.directionsSchema, errorMessage, logger.warn);
         break;
       case "/api/fetchincidents":
-        errorMessage = "Missing required attributes for incident detection.";
+        errorMessage = "Missing or invalid attributes for incident detection.";
         body = schemaValidator(req.body, schemas.incidentsSchema, errorMessage, logger.warn);
         break;
+      case "/api/fetchplaces":
+        errorMessage = "Missing or invalid attributes to search for nearby places.";
+        body = schemaValidator(req.body, schemas.placesSchema, errorMessage, logger.warn);
+        break;
+      case "/api/fetchplacedetails":
+        errorMessage = "Missing or invalid attribute to retrieve place details.";
+        body = schemaValidator(req.body, schemas.placeDetailsSchema, errorMessage, logger.warn);
+        break;
+
       default:
         logger.warn("Route not found. Not validating JSON.")
     }

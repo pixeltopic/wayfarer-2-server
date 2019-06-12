@@ -4,7 +4,7 @@ const directionsSchema = Joi.object().keys({
   origin: Joi.string(),
   destination: Joi.string().required(),
   mode: Joi.string().lowercase().valid(["driving", "bicycling", "transit", "walking"]).required(),
-  units: Joi.string().lowercase().valid(["imperial", "metric"]).required(),
+  units: Joi.string().lowercase().valid(["imperial", "metric"]).required().default("imperial"),
   altRoutes: Joi.boolean().required(),
   avoidFerries: Joi.boolean(),
   avoidHighways: Joi.boolean(),
@@ -24,4 +24,25 @@ exports.incidentsSchema = Joi.object().keys({
   extraParams: Joi.object().keys({
     radius: Joi.number().min(0).required() // no need for units with the inclusion of units from directionsSchema
   }).default({})
+});
+
+
+// const { keyword, type, radius, minprice, maxprice, units, address } = req.body;
+exports.placesSchema = Joi.object().keys({
+  keyword: Joi.string().required(),
+  type: Joi.string().allow(""),
+  radius: Joi.number().min(0).required(),
+  minprice: Joi.number().default(-1),
+  maxprice: Joi.number().default(-1),
+  units: Joi.string().lowercase().valid(["imperial", "metric"]).required().default("imperial"),
+  currentLocation: Joi.object().keys({
+    lat: Joi.number().required(),
+    lng: Joi.number().required()
+  }),
+  address: Joi.string(),
+  next_page_token: Joi.string()
+}).or("address", "currentLocation");
+
+exports.placeDetailsSchema = Joi.object().keys({
+  place_id: Joi.string().required()
 });
