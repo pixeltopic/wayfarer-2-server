@@ -120,7 +120,7 @@ exports.fetchPlaces = async (req, res, next) => {
       // const placesResponse = await googleMaps.get(`/place/nearbysearch/json`, placesParams);
       const placesResponse = await mapwrap.nearbySearchPlaces(placesParams);
       // const revGeoRes = await googleMaps.get(`/geocode/json?latlng=${lat},${lng}&key=${keys.googleKey}`);
-      const revGeoRes = await mapwrap.reverseGeocode(lat, lng);
+      const revGeoRes = await mapwrap.reverseGeocode(currentLocation.lat, currentLocation.lng);
       // const { formatted_address } = revGeoRes.data.results[0];
 
       res.send({ 

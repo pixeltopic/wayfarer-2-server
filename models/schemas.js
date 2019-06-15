@@ -1,7 +1,7 @@
 const Joi = require("@hapi/joi");
 
 const directionsSchema = Joi.object().keys({
-  origin: Joi.string(),
+  origin: Joi.string().allow(""),
   destination: Joi.string().required(),
   mode: Joi.string().lowercase().valid(["driving", "bicycling", "transit", "walking"]).required(),
   units: Joi.string().lowercase().valid(["imperial", "metric"]).required().default("imperial"),
@@ -39,7 +39,7 @@ exports.placesSchema = Joi.object().keys({
     lat: Joi.number().required(),
     lng: Joi.number().required()
   }),
-  address: Joi.string(),
+  address: Joi.string().allow(""),
   
 }).or("address", "currentLocation");
 
