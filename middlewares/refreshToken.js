@@ -3,14 +3,16 @@ const User = require("../models/user");
 const keys = require("../config/keys");
 const mongoose = require("mongoose");
 
+/**
+ * middleware to ensure that the jwt is valid.
+ * if jwt expired under x minutes ago, allow refresh.
+ * if not, do not allow refresh.
+ */
 module.exports = async (req, res, next) => {
-  // middleware to ensure that the jwt is valid.
-  // if jwt expired under x minutes ago, allow refresh.
-  // if not, do not allow refresh.
+
   if (!req.headers.authorization) {
     res.locals.noAuth = true; // allows controller or succeeding middlewares to handle if user is not authenticated
-    next(); // if auth key not provided, user is not logged in and using a public route.
-    return;
+    return next(); // if auth key not provided, user is not logged in and using a public route.
   }
 
   const now = Math.ceil(new Date().getTime() / 1000);
@@ -24,17 +26,11 @@ module.exports = async (req, res, next) => {
   }
 
   if (mongoose.Types.ObjectId.isValid(decoded.sub)) {
-    // Yes, it's a valid ObjectId, proceed with `countDocuments` call.
     try {
-      const count = await User.countDocuments({ _id: decoded.sub })
-        
+      const userMatch = await User.countDocuments({ _id: decoded.sub });
       // ensure that there is exactly one user matching the decoded id.
-      if (count === 1) {
-        // token is expired, enter this block
-        
-      } else {
+      if (userMatch !== 1)
         return res.status(403).send({ error: "User associated with token does not exist." });
-      }
       
       if (now > decoded.exp) {
         console.log("token is currently expired.");
@@ -49,12 +45,10 @@ module.exports = async (req, res, next) => {
           return next();
         }
       }
-
     } catch (e) {
       res.set("Connection", "close").status(403).send({ error: "Mongoose error." });
       return;
     }
-    
   } else {
     res.set("Connection", "close").status(403).send({ error: "Invalid token format. Please reauthenticate." });
     return;
