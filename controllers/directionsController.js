@@ -59,7 +59,7 @@ exports.fetchDirections = async (req, res, next) => {
         origin: payload.getStartAddress() || newOrigin,
         destination: payload.getEndAddress() || destination
       },
-      refreshedToken: req.auth
+      refreshedToken: res.locals.auth
     });
   } catch (err) {
     return next(err); // pass error to central error handler
