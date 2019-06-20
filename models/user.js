@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt-nodejs");
+const logger = require("../utils").logger(__filename);
 
 // defined model
 const userSchema = new Schema({
@@ -28,7 +29,7 @@ userSchema.pre("save", function(next) { // "before this model is saved, run func
 // all users created by userSchema have access to the method comparePassword
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   const isMatch = bcrypt.compareSync(candidatePassword, this.password);
-  console.log("checking if password matches:", isMatch);
+  logger.info("checking if password matches:", isMatch);
   callback(null, isMatch);
 }
 

@@ -5,7 +5,7 @@ const GeoPoint = require("../utils/geopoint");
 const { IncidentsProcessor, IncidentsCache } = require("../utils/IncidentsProcessor");
 const mapwrap = require("../api/mapwrap");
 const ErrorWrapper = require("../utils/ErrorWrapper");
-const logger = require("../utils/logger")(__filename);
+const logger = require("../utils").logger(__filename);
 
 exports.fetchIncidents = async (req, res, next) => {
   // return res.status(200).send({ debug: "reached fetchIncidents controller successfully." });
@@ -89,7 +89,7 @@ exports.fetchIncidents = async (req, res, next) => {
       const radiusInMeters = units === "imperial" ? parseFloat(radius) * 1609 : parseFloat(radius) * 1000; // calculates radius in meters
 
       logger.info("IncidentsProcessor starting with custom radius.");
-      const incidents = await new IncidentsProcessor(payload.getRoutes(), IncidentsCache).retrieveIncidents(radiusInMeters);
+      const incidents = await new IncidentsProcessor(payload.getRoutes(), IncidentsCache, logger).retrieveIncidents(radiusInMeters);
       logger.info("IncidentsProcessor done.");
 
       return res.send(incidents);

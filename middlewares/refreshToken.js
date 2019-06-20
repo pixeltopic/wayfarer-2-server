@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const keys = require("../config/keys");
 const mongoose = require("mongoose");
+const logger = require("../utils").logger(__filename);
 
 /**
  * middleware to ensure that the jwt is valid.
@@ -18,7 +19,7 @@ module.exports = async (req, res, next) => {
   const now = Math.ceil(new Date().getTime() / 1000);
 
   const decoded = jwt.decode(req.headers.authorization);
-  console.log("decoded jwt:\n", decoded, "\ncurrent time:", now, "\nnow - decoded jwt expiry time. If positive, it is expired:", now - decoded.exp);
+  logger.info(`decoded jwt:\n${decoded}\ncurrent time: ${now}\nnow - decoded jwt expiry time. If positive, it is expired: ${now - decoded.exp}`);
 
   if (!decoded) {
     // if invalid jwt cannot be decoded) will be null
@@ -33,14 +34,14 @@ module.exports = async (req, res, next) => {
         return res.status(403).send({ error: "User associated with token does not exist." });
       
       if (now > decoded.exp) {
-        console.log("token is currently expired.");
+        logger.warn("token is currently expired.");
         if (now - decoded.exp < Number(keys.inactiveTokenTime)) { // if it has been less than x seconds of inactivity, refresh token
           const newToken = jwt.sign({ sub: decoded.sub }, keys.userSecret, { expiresIn: keys.tokenExpiryTime });
           res.locals.auth = newToken;
           res.locals.refreshedToken = newToken;
           return next();
         } else {
-          console.log("res.locals.auth is an empty string\n");
+          logger.warn("res.locals.auth is an empty string\n");
           res.locals.auth = ""; // tells client to unauthorize user if not succeeded by the verifyToken middleware.
           return next();
         }

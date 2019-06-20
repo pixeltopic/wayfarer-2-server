@@ -51,12 +51,14 @@ class IncidentsProcessor {
    * @param {Object[]} googleDirections - The google API response contains a 'routes' property on the top level of the JSON structure, 
    * containing an array of route objects (array size is 1 if alternate routes was disabled). Accepts this array.
    * @param {LRUCache} [cache] - LRUCache to hold recently fetched incidents within the last x minutes.
+   * @param {any} [logger] - Winston logger
    */
-  constructor(googleDirections, cache = null) {
+  constructor(googleDirections, cache = null, logger = null) {
     this.googleDirections = googleDirections;
     this.uniqueLatLngArrs = []; // order matters, index 0 corresponds to route 1, and so on.
 
     this._cache = cache;
+    this._logger = logger || console;
 
     this._mapQuest = axios.create({
       baseURL: "http://www.mapquestapi.com/traffic/v2/incidents"
@@ -75,7 +77,6 @@ class IncidentsProcessor {
     let latLngQueue = [];
 
     stepArray.forEach((step) => {
-      // console.log(step);
       if (!latLngQueue.find((latLngPair) => latLngPair.lat === step.start_location.lat && latLngPair.lng === step.start_location.lng)) {
         latLngQueue.push(step.start_location);
       }
@@ -157,7 +158,7 @@ class IncidentsProcessor {
       return this._assertSquareMiles(result); // refactor to return ordered array instead of an object with int keys so it's more intuitive
       
     } catch(err) {
-      console.log(err);
+      this._logger.error(err);
       return [];
     }
   }
@@ -177,7 +178,7 @@ class IncidentsProcessor {
     });
     
     return googleDirections.map((route, i) => {
-      // console.log(`\nmapping iteration #${i}\n`);
+      // this._logger.info(`\nmapping iteration #${i}\n`);
       return this._genSegmentArr(this.uniqueLatLngArrs[i]);
     });
     
@@ -202,7 +203,7 @@ class IncidentsProcessor {
       if (this._cache) {
         const cachedIncident = this._cache.get(`${corner1.lat},${corner1.lng},${corner2.lat},${corner2.lng}`);
         if (cachedIncident) {
-          console.log("IncidentsProcessor cache hit.");
+          this._logger.info("IncidentsProcessor cache hit.");
           return cachedIncident;
         }
       }
@@ -222,8 +223,7 @@ class IncidentsProcessor {
       return response.data.incidents;
 
     } catch (err) {
-      console.log(err);
-
+      this._logger.error(err);
       return []; // return an empty array instead of null
     }
   }

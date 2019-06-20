@@ -6,6 +6,8 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const LocalStrategy = require("passport-local");
 
+const logger = require("../utils").logger(__filename);
+
 // Local Login
 const localOptions = { 
   usernameField: "email" 
@@ -20,7 +22,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     if (!user) {
       return done(null, false);
     }
-    console.log("comparing passwords now");
+    logger.info("comparing passwords now");
     user.comparePassword(password, (err, isMatch) => {
       if (err) { return done(err); }
       if (!isMatch) { return done(null, false); }

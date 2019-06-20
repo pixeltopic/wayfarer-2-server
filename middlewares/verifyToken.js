@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys");
+const logger = require("../utils").logger(__filename);
 
 module.exports = (req, res, next) => {
   // verifies if jwt is valid. Should always be called after refreshToken.
-  console.log("authorization header:", req.headers.authorization);
-  console.log("refreshedtoken:", res.locals.refreshedToken);
+  logger.info("authorization header:", req.headers.authorization);
+  logger.info("refreshedtoken:", res.locals.refreshedToken);
 
   if (res.locals.noAuth) {
     return res.status(403).send({ error: "Unauthorized."});

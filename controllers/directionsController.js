@@ -1,6 +1,6 @@
 const mapwrap = require("../api/mapwrap");
 const ErrorWrapper = require("../utils/ErrorWrapper");
-const logger = require("../utils/logger")(__filename);
+const logger = require("../utils").logger(__filename);
 
 exports.fetchDirections = async (req, res, next) => {
   const {
