@@ -1,4 +1,5 @@
 const witai = require("../api/witai");
+const logger = require("../utils").logger(__filename);
 
 const checkUnits = measurementStr => {
   switch(measurementStr) {
@@ -122,10 +123,9 @@ exports.processQuery = async (req, res, next) => {
       }
     });
 
-    console.log("response of witai:", response.data);
+    logger.info("response of witai:", response.data);
 
     const intent = response.data.entities.intent ? response.data.entities.intent[0].value : "";
-    // console.log("intent:", intent === "directions");
 
     if (intent !== "places" && intent !== "incidents" && intent !== "directions") {
       res.send({ error: "Sorry, can you be more specific?" });
@@ -167,10 +167,9 @@ exports.processQuery = async (req, res, next) => {
       return;
     }
 
-  } catch(e) {
-    console.log("Error in processQuery:", e);
-    res.status(400).send({ error: "Query failed." });
-    next();
+  } catch(err) {
+    // res.status(400).send({ error: "Query failed." });
+    next(err);
     return;
   }
 }
