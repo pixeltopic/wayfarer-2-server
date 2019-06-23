@@ -3,7 +3,7 @@ const keys = require("../config/keys");
 module.exports = (req, res, next) => {
   // middleware to ensure that the api `key` in the header of the request matches
   if (req.headers.key !== keys.key) {
-    return res.status(403).send({ error: "invalid api key" });
+    return res.status(401).send({ error: "invalid api key" });
   }
   next();
 }

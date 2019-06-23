@@ -22,7 +22,6 @@ module.exports = app => {
 
   app.post(
     "/api/refreshandverify",
-    validateKey,
     refreshToken,
     verifyToken,
     (req, res, next) => {
@@ -31,14 +30,14 @@ module.exports = app => {
     }
   );
 
-  app.post("/api/refreshtoken", validateKey, refreshToken, (req, res) => {
+  app.post("/api/refreshtoken", refreshToken, (req, res) => {
     // route only refreshes token.
     // refreshedToken undefined: still valid
     // "": invalid forever
     // "non empty string": new refreshed token
     
     if (res.locals.noAuth) {
-      return res.status(403).send({ message: "User is not authenticated." });
+      return res.status(401).send({ message: "User is not authenticated." });
     } else if (res.locals.auth === "") {
       return res.send({
         message: "Provided token cannot be refreshed",

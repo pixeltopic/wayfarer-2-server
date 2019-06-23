@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
 
   if (!decoded) {
     // if invalid jwt cannot be decoded) will be null
-    return res.status(403).send({ error: "Invalid token." });
+    return res.status(401).send({ error: "Invalid token." });
   }
 
   if (mongoose.Types.ObjectId.isValid(decoded.sub)) {
@@ -47,11 +47,11 @@ module.exports = async (req, res, next) => {
         }
       }
     } catch (e) {
-      res.set("Connection", "close").status(403).send({ error: "Mongoose error." });
+      res.set("Connection", "close").status(400).send({ error: "Mongoose error." });
       return;
     }
   } else {
-    res.set("Connection", "close").status(403).send({ error: "Invalid token format. Please reauthenticate." });
+    res.set("Connection", "close").status(401).send({ error: "Invalid token format. Please reauthenticate." });
     return;
   }
   next();
