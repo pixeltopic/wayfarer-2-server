@@ -16,8 +16,7 @@ exports.fetchPlacesWithToken = async (req, res, next) => {
       places: { 
         results: placesResponse.getResults(), 
         nextPageToken: placesResponse.getNextPageToken() 
-      }, 
-      refreshedToken: res.locals.auth
+      }
     });
   } catch(err) {
     return next(err);
@@ -67,8 +66,7 @@ exports.fetchPlaces = async (req, res, next) => {
             results: [], // check how front end handles invalid geocode address
             center: null,
             address 
-          }, 
-          refreshedToken: res.locals.auth
+          }
         });
       }
 
@@ -91,8 +89,7 @@ exports.fetchPlaces = async (req, res, next) => {
           nextPageToken: placesResponse.getNextPageToken() || null,
           center: geocodedResponse.getTopAddress(),
           address: formattedAddress
-        }, 
-        refreshedToken: res.locals.auth 
+        }
       });
     } else {
       placesParams.location = currentLocation;
@@ -106,8 +103,7 @@ exports.fetchPlaces = async (req, res, next) => {
           nextPageToken: placesResponse.getNextPageToken() || null,
           center: currentLocation,
           address: revGeoRes.getTopAddress(true)
-        }, 
-        refreshedToken: res.locals.auth 
+        }
       });
 
       return;
@@ -127,8 +123,7 @@ exports.fetchPlaceDetails = async (req, res, next) => {
       placeDetails: { 
         result: placeDetailsResponse.result, 
         place_id 
-      }, 
-      refreshedToken: res.locals.auth 
+      }
     });
 
   } catch(err) {

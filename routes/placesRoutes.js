@@ -1,8 +1,7 @@
 const placesController = require("../controllers/placesController");
-const refreshToken = require("../middlewares/refreshToken");
 
 module.exports = app => {
-  app.post("/api/fetchplaces", refreshToken, placesController.fetchPlaces);
-  app.post("/api/fetchplacedetails", refreshToken, placesController.fetchPlaceDetails);
-  app.post("/api/fetchplaces/token", refreshToken, placesController.fetchPlacesWithToken);
+  app.post("/api/fetchplaces", placesController.fetchPlaces);
+  app.post("/api/fetchplacedetails", placesController.fetchPlaceDetails);
+  app.post("/api/fetchplaces/token", placesController.fetchPlacesWithToken);
 }
