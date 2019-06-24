@@ -127,7 +127,6 @@ exports.fetchPlaceDetails = async (req, res, next) => {
     });
 
   } catch(err) {
-    // res.status(400).send({ error: "Lookup failed." });
     return next(err);
   }
 

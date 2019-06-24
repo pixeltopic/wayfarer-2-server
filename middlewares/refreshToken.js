@@ -11,11 +11,6 @@ const logger = require("../utils").logger(__filename);
  */
 module.exports = async (req, res, next) => {
 
-  if (!req.headers.authorization) {
-    res.locals.noAuth = true; // allows controller or succeeding middlewares to handle if user is not authenticated
-    return next(); // if auth key not provided, user is not logged in and using a public route.
-  }
-
   const now = Math.ceil(new Date().getTime() / 1000);
 
   const decoded = jwt.decode(req.headers.authorization);

@@ -109,7 +109,7 @@ exports.processQuery = async (req, res, next) => {
 
   
   if (!currentLocation) {
-    res.send({ error: "Please enable location services." });
+    res.send({ message: "Please enable location services." });
     return;
   }
 
@@ -128,7 +128,7 @@ exports.processQuery = async (req, res, next) => {
     const intent = response.data.entities.intent ? response.data.entities.intent[0].value : "";
 
     if (intent !== "places" && intent !== "incidents" && intent !== "directions") {
-      res.send({ error: "Sorry, can you be more specific?" });
+      res.send({ message: "Sorry, can you be more specific?" });
       return;
     }
 
@@ -136,7 +136,7 @@ exports.processQuery = async (req, res, next) => {
     if (intent === "directions") {
       processedQuery = processDirections(response.data);
       if (!processedQuery.origin || !processedQuery.destination) {
-        res.send({ error: "Sorry, can you be more specific?" })
+        res.send({ message: "Sorry, can you be more specific?" })
         return;
       }
       res.send({ queryParams: processedQuery, queryType: "directions" });
@@ -150,7 +150,7 @@ exports.processQuery = async (req, res, next) => {
       */
       processedQuery = processIncidents(response.data);
       if (!processedQuery.origin || !processedQuery.destination) {
-        res.send({ error: "Sorry, can you be more specific?" })
+        res.send({ message: "Sorry, can you be more specific?" })
         return;
       }
       res.send({ queryParams: processedQuery, queryType: "incidents" });
@@ -159,7 +159,7 @@ exports.processQuery = async (req, res, next) => {
     } else if (intent === "places") {
       processedQuery = processPlaces(response.data);
       if (processedQuery.radius === "0" || !processedQuery.keyword) {
-        res.send({ error: "Sorry, can you be more specific?" })
+        res.send({ message: "Sorry, can you be more specific?" })
         return;
       }
 

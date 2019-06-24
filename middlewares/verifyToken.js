@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   logger.info(`authorization header: ${req.headers.authorization}`);
 
   if (!req.headers.authorization) {
-    return res.status(401).send({ message: "Unauthorized." });
+    return res.status(403).send({ message: "Unauthorized." });
   }
   
   try {

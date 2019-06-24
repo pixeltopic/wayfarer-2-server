@@ -5,7 +5,7 @@ module.exports = (err, req, res, next) => {
   logger.warn("Stack trace");
   logger.error(err.stack)
   if (err.getStatusCode)
-    return res.status(err.getStatusCode()).send({ error: err.message || "Server error." });
+    return res.status(err.getStatusCode()).send({ message: err.message || "Server error." });
   else
-    return res.status(500).send({ error: err.message || "Server error." });
+    return res.status(500).send({ message: err.message || "Server error." });
 }

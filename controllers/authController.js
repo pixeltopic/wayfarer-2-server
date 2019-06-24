@@ -14,7 +14,7 @@ exports.signup = (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
-    return res.status(422).send({ error: "Email and password must be provided." });
+    return res.status(422).send({ message: "Email and password must be provided." });
   }
 
   // see if user with given email exists. `User` refers to all users, not just one.
@@ -24,7 +24,7 @@ exports.signup = (req, res, next) => {
 
     // if user exists, return error
     if (existingUser) {
-      return res.status(422).send({ error: "Email is in use" });
+      return res.status(422).send({ message: "Email is in use" });
     }
 
     // user does not exist, create and save new user record
