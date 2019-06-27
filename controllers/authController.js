@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const tokenForUser = require("../utils/tokenForUser");
-
+const Joi = require("@hapi/joi");
+const logger = require("../utils").logger(__filename);
 
 exports.signin = (req, res, next) => {
   // run when passport finishes authenticating email/password.
@@ -14,7 +15,14 @@ exports.signup = (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
+    logger.warn("User did not provide an email and/or password.");
     return res.status(422).send({ message: "Email and password must be provided." });
+  }
+
+  const { error } = Joi.validate(email, Joi.string().email());
+  if (error) {
+    logger.warn("User provided an email with invalid format.");
+    return res.status(422).send({ message: "Invalid email provided." });
   }
 
   // see if user with given email exists. `User` refers to all users, not just one.
@@ -24,7 +32,8 @@ exports.signup = (req, res, next) => {
 
     // if user exists, return error
     if (existingUser) {
-      return res.status(422).send({ message: "Email is in use" });
+      logger.warn("User provided duplicate email.");
+      return res.status(422).send({ message: "Email is in use." });
     }
 
     // user does not exist, create and save new user record
@@ -36,6 +45,7 @@ exports.signup = (req, res, next) => {
     userToSave.save(err => {
       if (err) { return next(err); }
 
+      logger.info("User successfully signed up.");
       res.json({ token: tokenForUser(userToSave) }); // response to request indicating creation of user.
     }); // save record to database.
 
