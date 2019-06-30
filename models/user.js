@@ -29,7 +29,7 @@ userSchema.pre("save", function(next) { // "before this model is saved, run func
 // all users created by userSchema have access to the method comparePassword
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
   const isMatch = bcrypt.compareSync(candidatePassword, this.password);
-  logger.info("checking if password matches:", isMatch);
+  logger.info(`Does password match? ${isMatch}`);
   callback(null, isMatch);
 }
 

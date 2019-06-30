@@ -1,11 +1,9 @@
 const axios = require("axios");
-const keys = require("../config");
+const { googleRecaptchaKey, enableRecaptcha } = require("../config");
 const logger = require("../utils").logger(__filename);
 
-const ENABLE_RECAPTCHA = true; // false if you want to use postman to make testing easier
-
 module.exports = async (req, res, next) => {
-  if (process.env.NODE_ENV === "production" || ENABLE_RECAPTCHA) {
+  if (process.env.NODE_ENV === "production" || enableRecaptcha) {
     if (process.env.NODE_ENV !== "production") {
       logger.warn("Recaptcha validation currently enabled in dev mode.");
     }
@@ -17,7 +15,7 @@ module.exports = async (req, res, next) => {
   
       const { data } = await axios.post(
         `https://www.google.com/recaptcha/api/siteverify?secret=${
-          keys.googleRecaptchaKey
+          googleRecaptchaKey
         }&response=${req.headers.recaptcha}`
       );
   

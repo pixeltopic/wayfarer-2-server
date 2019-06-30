@@ -8,5 +8,6 @@ module.exports = {
   googleKey: process.env.GOOGLE_KEY, // google api key
   googleRecaptchaKey: process.env.GOOGLE_RECAPTCHA_KEY, // google recaptcha secret
   mapquestKey: process.env.MAPQUEST_KEY, // mapquest incidents key
-  witaiKey: process.env.WITAI_KEY
+  witaiKey: process.env.WITAI_KEY,
+  enableRecaptcha: true // false if you want to use postman to make testing easier. Should always be true in prod env
 }

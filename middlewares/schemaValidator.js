@@ -53,7 +53,7 @@ module.exports = (req, res, next) => {
         body = schemaValidator(req.body, schemas.placesTokenSchema, errorMessage, logger.warn);
         break;
       default:
-        logger.warn("Route not found. Not validating JSON.")
+        logger.warn("Route not defined in schemaValidator. Not validating JSON.")
     }
     
     res.locals.body = body; // do not use req.body as it does not contain the validated schema type conversions
