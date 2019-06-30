@@ -1,8 +1,7 @@
 const mapquest = require("../api/mapquest");
 const keys = require("../config");
 const GeoPoint = require("../utils/geopoint");
-// const { updateFullIncident } = require("../utils/incidentsUtils");
-const { IncidentsProcessor, IncidentsCache } = require("../utils/IncidentsProcessor");
+const { IncidentsProcessor, IncidentsCache } = require("../services/IncidentsProcessor");
 const mapwrap = require("../api/mapwrap");
 const ErrorWrapper = require("../utils/ErrorWrapper");
 const logger = require("../utils").logger(__filename);

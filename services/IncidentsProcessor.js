@@ -287,10 +287,4 @@ class IncidentsProcessor {
 
 exports.IncidentsProcessor = IncidentsProcessor;
 
-exports.IncidentsCache = new LRUCache(75, 2 * 300000); // fetched incidents are fresh for 10 minutes before it is pruned.
-
-// (async () => { 
-//   const instance =  new IncidentsProcessor(directionsData3);
-//   const incidentsObject = await instance.retrieveIncidents() 
-  
-// })();
+exports.IncidentsCache = new LRUCache(75, 2 * 300000); // fetched incidents are fresh for 10 minutes before it is pruned. (300,000 ms = 5 mins, * 2)
