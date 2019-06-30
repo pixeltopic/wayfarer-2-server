@@ -1,7 +1,7 @@
 const { getDistance } = require("geolib");
 const axios = require("axios");
 const LRU = require("lru-cache");
-const keys = require("../config/keys");
+const keys = require("../config");
 
 class LRUCache {
   /**

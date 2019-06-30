@@ -1,5 +1,5 @@
 const axios = require("axios");
-const keys = require("../config/keys");
+const keys = require("../config");
 const logger = require("../utils").logger(__filename);
 
 const ENABLE_RECAPTCHA = true; // false if you want to use postman to make testing easier

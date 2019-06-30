@@ -1,4 +1,4 @@
-const keys = require("../config/keys");
+const keys = require("../config");
 
 module.exports = (req, res, next) => {
   // middleware to ensure that the api `key` in the header of the request matches

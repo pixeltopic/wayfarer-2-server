@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
+const keys = require("../config");
 const logger = require("../utils").logger(__filename);
 
 module.exports = (req, res, next) => {

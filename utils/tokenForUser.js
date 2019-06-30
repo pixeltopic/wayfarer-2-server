@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
+const keys = require("../config");
 
 module.exports = user => {
   // generates a jwt for user based on userSecret

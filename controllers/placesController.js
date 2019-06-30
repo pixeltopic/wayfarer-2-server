@@ -1,5 +1,3 @@
-// const googleMaps = require("../api/googleMaps");
-// const keys = require("../config/keys");
 const mapwrap = require("../api/mapwrap");
 const logger = require("../utils").logger(__filename);
 const { convertUnitToMeters } = require("../utils").unitConversion;

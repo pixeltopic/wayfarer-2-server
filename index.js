@@ -12,7 +12,7 @@ const validateKey = require("./middlewares/validateKey");
 const schemaValidator = require("./middlewares/schemaValidator");
 const errorHandler = require("./middlewares/errorHandler");
 
-const keys = require("./config/keys");
+const keys = require("./config");
 
 // cd C:\Users\xmobl\Documents\GitRepos\wayfarer-2\server
 // Db setup
