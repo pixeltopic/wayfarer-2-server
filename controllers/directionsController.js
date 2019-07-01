@@ -1,59 +1,21 @@
-const mapwrap = require("../api/mapwrap");
-const ErrorWrapper = require("../utils/ErrorWrapper");
+const HttpStatus = require("http-status-codes");
+const { googleDirectionsFetch } = require("../services/google/directionsFetch");
 const logger = require("../utils").logger(__filename);
 
-exports.fetchDirections = async (req, res, next) => {
-  const {
-    altRoutes,
-    avoidFerries,
-    avoidHighways,
-    avoidIndoor,
-    avoidTolls,
-    destination,
-    mode,
-    origin,
-    units,
-    currentLocation // lat lng pair. may or may not be present
-  } = res.locals.body;
-  // useCurrentLocation, if true, will prioritize currentLocation over inputted origin.
-  logger.info(res.locals.body);
-
+exports.directions = async (req, res, next) => { 
   try {
-    logger.info("Fetching directions");
-
-    let newOrigin;
-    if (currentLocation) {
-      const { lat, lng } = currentLocation;
-      logger.info(`Using current location. Reverse geocoding {${lat}, ${lng}}`);
-      
-      const revGeoRes = await mapwrap.reverseGeocode(lat, lng);
-      newOrigin = revGeoRes.getTopAddress(true);
-      if (!newOrigin)
-        throw new ErrorWrapper(
-          "No address maps to current location",
-          "directionsController",
-          400
-        );
-    } else {
-      newOrigin = origin;
-    }
-
-    logger.info("Fetching directions from Google Directions");
-    const payload = await mapwrap.directions({
-      origin: newOrigin,
+    const {
       destination,
-      mode,
-      altRoutes,
-      units,
-      avoidFerries,
-      avoidTolls,
-      avoidHighways,
-      avoidIndoor
-    });
+    } = res.locals.body;
+
+    logger.info("Fetching directions with search params:");
+    logger.info(res.locals.body);
+
+    const payload = await googleDirectionsFetch(res.locals.body);
 
     logger.info("Sending response");
 
-    return res.send({
+    return res.status(HttpStatus.OK).send({
       directions: {
         routes: payload.getRoutes(),
         origin: payload.getStartAddress() || newOrigin,

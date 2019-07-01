@@ -32,7 +32,7 @@ module.exports = (req, res, next) => {
 
   try {
     switch(req.originalUrl) {
-      case "/api/fetchdirections":
+      case "/api/directions":
         errorMessage = "Missing or invalid attributes for search. Try to refresh.";
         body = schemaValidator(req.body, schemas.directionsSchema, errorMessage, logger.warn);
         break;
