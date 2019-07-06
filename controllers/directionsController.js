@@ -5,6 +5,7 @@ const logger = require("../utils").logger(__filename);
 exports.directions = async (req, res, next) => { 
   try {
     const {
+      origin,
       destination,
     } = res.locals.body;
 
@@ -18,7 +19,7 @@ exports.directions = async (req, res, next) => {
     return res.status(HttpStatus.OK).send({
       directions: {
         routes: payload.getRoutes(),
-        origin: payload.getStartAddress() || newOrigin,
+        origin: payload.getStartAddress() || origin,
         destination: payload.getEndAddress() || destination
       }
     });
