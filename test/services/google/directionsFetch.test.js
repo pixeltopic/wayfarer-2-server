@@ -8,7 +8,7 @@ chai.use(chaiAsPromised)
 
 const expect = chai.expect;
 
-describe("googleDirectionsFetch()", async function() {
+describe.skip("googleDirectionsFetch()", async function() {
   const searchParamsA = {
     altRoutes: true,
     avoidFerries: false,

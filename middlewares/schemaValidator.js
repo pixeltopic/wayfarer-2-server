@@ -36,7 +36,7 @@ module.exports = (req, res, next) => {
         errorMessage = "Missing or invalid attributes for search. Try to refresh.";
         body = schemaValidator(req.body, schemas.directionsSchema, errorMessage, logger.warn);
         break;
-      case "/api/fetchincidents":
+      case "/api/incidents":
         errorMessage = "Missing or invalid attributes for incident detection.";
         body = schemaValidator(req.body, schemas.incidentsSchema, errorMessage, logger.warn);
         break;
