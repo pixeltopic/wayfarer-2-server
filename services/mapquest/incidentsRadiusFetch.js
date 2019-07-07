@@ -1,6 +1,6 @@
 const mapquest = require("../../api/mapquest");
 const logger = require("../../utils").logger(__filename);
-const GeoPoint = require("../../utils").geopoint;
+const GeoPoint = require("../GeoPoint")
 const { mapquestKey } = require("../../config");
 
 exports.mapquestRadiusFetch = async (
