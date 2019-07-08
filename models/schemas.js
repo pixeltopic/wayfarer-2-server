@@ -1,5 +1,10 @@
 const Joi = require("@hapi/joi");
 
+exports.signupSchema = Joi.object().keys({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+});
+
 const directionsSchema = Joi.object().keys({
   origin: Joi.string().allow(""),
   destination: Joi.string().required(),

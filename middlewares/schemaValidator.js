@@ -2,6 +2,7 @@ const logger = require("../utils/logger")(__filename);
 const schemas = require("../models/schemas");
 const Joi = require("@hapi/joi");
 const ErrorWrapper = require("../utils/ErrorWrapper");
+const HttpStatus = require("http-status-codes");
 
 /** 
  * schemaValidator helper for middleware. Not combined with the body of the middleware so it can be unit testable.
@@ -18,7 +19,7 @@ const schemaValidator = (body, schema, errorMessage, logger) => {
 
   if (error) {
     logger && logger(error.message);
-    throw new ErrorWrapper(errorMessage || error.message.replace(/"/g, "'"), "ValidationError", 400);
+    throw new ErrorWrapper(errorMessage || error.message.replace(/"/g, "'"), "ValidationError", HttpStatus.UNPROCESSABLE_ENTITY);
   };
     
   return value;
@@ -32,6 +33,10 @@ module.exports = (req, res, next) => {
 
   try {
     switch(req.originalUrl) {
+      case "/api/signup":
+        errorMessage = "Valid email and password must be provided.";
+        body = schemaValidator(req.body, schemas.signupSchema, errorMessage, logger.warn);
+        break;
       case "/api/directions":
         errorMessage = "Missing or invalid attributes for search. Try to refresh.";
         body = schemaValidator(req.body, schemas.directionsSchema, errorMessage, logger.warn);
