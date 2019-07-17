@@ -1,7 +1,9 @@
-// const User = require("../models/user");
 const { tokenForUser } = require("../utils");
 const logger = require("../utils").logger(__filename);
-const { refreshToken: { refreshToken, doesUserIdExist, decodeJwt }, registerUser: { registerUser, doesUserEmailExist} } = require("../services/user");
+const {
+  refreshToken: { refreshToken, doesUserIdExist, decodeJwt },
+  registerUser: { registerUser, doesUserEmailExist }
+} = require("../services/user");
 const HttpStatus = require("http-status-codes");
 
 exports.signin = (req, res) => {
@@ -39,17 +41,26 @@ exports.refreshToken = async (req, res, next) => {
     const decoded = decodeJwt(incomingToken);
 
     if (!decoded)
-      return res.status(HttpStatus.BAD_REQUEST).send({ message: "Provided JWT was invalid so token will not be refreshed." })
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .send({
+          message: "Provided JWT was invalid so token will not be refreshed."
+        });
 
     const userExists = await doesUserIdExist(decoded.sub);
-    if (!userExists) 
-      return res.status(HttpStatus.BAD_REQUEST).send({ message: "User associated with token does not exist. Token will not be refreshed." })
+    if (!userExists)
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .send({
+          message:
+            "User associated with token does not exist. Token will not be refreshed."
+        });
 
     const token = await refreshToken(incomingToken, decoded);
     logger.info(`Token refreshed. New token is: ${token}`);
 
     return res.status(HttpStatus.OK).send({ token });
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 };

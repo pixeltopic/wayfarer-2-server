@@ -1,7 +1,7 @@
 const verifyToken = require("./middlewares/verifyToken");
 
 module.exports = app => {
-  require("./routes/authRoutes")(app);
+  require("./routes/userRoutes")(app);
   require("./routes/directionsRoutes")(app);
   require("./routes/incidentsRoutes")(app);
   require("./routes/placesRoutes")(app);

@@ -14,7 +14,7 @@ const validateKey = require("./middlewares/validateKey");
 const schemaValidator = require("./middlewares/schemaValidator");
 const errorHandler = require("./middlewares/errorHandler");
 
-const { mongoURI, origin} = require("./config");
+const { mongoURI, origin } = require("./config");
 
 // Db setup
 mongoose.connect(mongoURI, { 
