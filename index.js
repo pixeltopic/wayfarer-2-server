@@ -1,20 +1,21 @@
-const express = require("express");
+const app = require("express")();
 const http = require("http");
+const passport = require("passport");
+const mongoose = require("mongoose");
+
+// middlewares
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const logger = require("./utils/logger")(__filename);
-const app = express();
-const passport = require("passport");
-const { jwtLogin, localLogin } = require("./services").passport;
-const router = require("./router");
-const mongoose = require("mongoose");
 const cors = require("cors");
-// custom middlewares
-const validateKey = require("./middlewares/validateKey");
-const schemaValidator = require("./middlewares/schemaValidator");
-const errorHandler = require("./middlewares/errorHandler");
 
+// custom middlewares
+const { validateKey, schemaValidator, errorHandler } = require("./middlewares");
+const { passport: { localLogin } } = require("./services");
+
+const router = require("./router");
 const { mongoURI, origin } = require("./config");
+
 
 // Db setup
 mongoose.connect(mongoURI, { 
@@ -42,7 +43,6 @@ app.use(validateKey);
 app.use(schemaValidator);
 
 // connect passport jwt strategy to passport
-passport.use(jwtLogin);
 passport.use(localLogin);
 
 // initialize routes
