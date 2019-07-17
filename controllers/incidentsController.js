@@ -23,7 +23,7 @@ exports.incidents = async (req, res, next) => {
     const payload = await googleDirectionsFetch(directionSearchParams);
 
     if (!payload.getRoute()) {
-      throw new ErrorWrapper("Directions not found.", "incidentsController", HttpStatus.BAD_REQUEST);
+      throw ErrorWrapper("Directions not found.", "incidentsController", HttpStatus.BAD_REQUEST);
     }
 
     const { 

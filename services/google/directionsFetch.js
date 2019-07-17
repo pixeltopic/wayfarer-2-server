@@ -44,7 +44,7 @@ exports.googleDirectionsFetch = async searchParams => {
     const revGeoRes = await mapwrap.reverseGeocode(lat, lng);
     newOrigin = revGeoRes.getTopAddress(true);
     if (!newOrigin)
-      throw new ErrorWrapper(
+      throw ErrorWrapper(
         "No address maps to current location",
         "directionsFetch service",
         HttpStatus.BAD_REQUEST

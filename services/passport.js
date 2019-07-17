@@ -1,6 +1,5 @@
-const passport = require("passport");
 const User = require("../models/user");
-const keys = require("../config");
+const { userSecret } = require("../config");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 
@@ -13,7 +12,7 @@ const localOptions = {
   usernameField: "email" 
 };
 
-const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+exports.localLogin = new LocalStrategy(localOptions, (email, password, done) => {
   // verify username & password, call `done` with user if true if correct
   // else call `done` with false
   User.findOne({ email: email }, (err, user) => {
@@ -36,10 +35,10 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromHeader("authorization"), // extracts `authorization` header from post request, etc. Decode jwt in header with `secretOrKey`
-  secretOrKey: keys.userSecret
+  secretOrKey: userSecret
 };
 
-const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
+exports.jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
   // See if userID in payload exists in our database
   // if so, call `done` callback with user object else call `done` with false.
   User.findById(payload.sub, (err, user) => {
@@ -52,8 +51,3 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
     }
   });
 });
-
-// connect passport jwt strategy to passport
-
-passport.use(jwtLogin);
-passport.use(localLogin);
