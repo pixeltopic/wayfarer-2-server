@@ -1,1 +1,4 @@
-exports.directionsFetch = require("./directionsFetch");
+module.exports = {
+  directionsFetch: require("./directionsFetch"),
+  placesFetch: require("./placesFetch"),
+}

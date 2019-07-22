@@ -45,15 +45,15 @@ module.exports = (req, res, next) => {
         errorMessage = "Missing or invalid attributes for incident detection.";
         body = schemaValidator(req.body, schemas.incidentsSchema, errorMessage, logger.warn);
         break;
-      case "/api/fetchplaces":
+      case "/api/places":
         errorMessage = "Missing or invalid attributes to search for nearby places.";
         body = schemaValidator(req.body, schemas.placesSchema, errorMessage, logger.warn);
         break;
-      case "/api/fetchplacedetails":
+      case "/api/places/details":
         errorMessage = "Missing or invalid attribute to retrieve place details.";
         body = schemaValidator(req.body, schemas.placeDetailsSchema, errorMessage, logger.warn);
         break;
-      case "/api/fetchplaces/token":
+      case "/api/places/token":
         errorMessage = "Missing token or invalid attributes.";
         body = schemaValidator(req.body, schemas.placesTokenSchema, errorMessage, logger.warn);
         break;
