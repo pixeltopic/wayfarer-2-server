@@ -10,7 +10,7 @@ const {
  * @returns {Promise<{ results: Array, nextPageToken: string }>} - an object containing the place results and a page token (empty if there is none left)
  *
  */
-const googlePlacesToken = async nextPageToken => {
+const getNearbyPlacesWithToken = async nextPageToken => {
   logger.info("Retrieving more place results with Google Places API");
   const placesResponse = await mapwrap.additionalPlaces(nextPageToken);
 
@@ -25,7 +25,7 @@ const googlePlacesToken = async nextPageToken => {
  * @param {string} placeId - ID identifying a place from Google Places
  * @returns {Promise<object>} an object containing the result and place id.
  */
-const googlePlaceDetails = async placeId => {
+const getPlaceDetails = async placeId => {
   const placeDetailsResponse = await mapwrap.placeDetails(placeId);
 
   return placeDetailsResponse.result;
@@ -48,7 +48,7 @@ const googlePlaceDetails = async placeId => {
  * @param {number} searchParams.currentLocation.lng - latitude of a location to use as the center.
  * @returns {Promise<{ results: Array, nextPageToken: string, center: { lat: number, lng: number }, address: string }>}
  */
-const googleNearbyPlacesFetch = async searchParams => {
+const getNearbyPlaces = async searchParams => {
   const {
     keyword,
     type,
@@ -123,7 +123,7 @@ const googleNearbyPlacesFetch = async searchParams => {
 };
 
 module.exports = {
-  googlePlacesToken,
-  googlePlaceDetails,
-  googleNearbyPlacesFetch
+  getNearbyPlacesWithToken,
+  getNearbyPlaces,
+  getPlaceDetails
 };

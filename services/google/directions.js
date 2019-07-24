@@ -22,7 +22,7 @@ const HttpStatus = require("http-status-codes");
  * @param {number} searchParams.currentLocation.lat - longitude of a location to use as the origin.
  * @param {number} searchParams.currentLocation.lng - latitude of a location to use as the origin.
  */
-exports.googleDirectionsFetch = async searchParams => {
+const getDirections = async searchParams => {
   const {
     altRoutes,
     avoidFerries,
@@ -46,7 +46,7 @@ exports.googleDirectionsFetch = async searchParams => {
     if (!newOrigin)
       throw ErrorWrapper(
         "No address maps to current location",
-        "directionsFetch service",
+        "getGoogleDirections service",
         HttpStatus.BAD_REQUEST
       );
   } else {
@@ -66,3 +66,7 @@ exports.googleDirectionsFetch = async searchParams => {
     avoidIndoor
   });
 };
+
+module.exports = {
+  getDirections
+}

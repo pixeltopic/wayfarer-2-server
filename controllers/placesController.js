@@ -1,13 +1,13 @@
 const HttpStatus = require("http-status-codes");
 const {
-  google: { placesFetch }
+  google: { getNearbyPlaces, getNearbyPlacesWithToken, getPlaceDetails }
 } = require("../services");
 
 exports.placesWithToken = async (req, res, next) => {
   const { nextPageToken } = res.locals.body;
 
   try {
-    const placesResponse = await placesFetch.googlePlacesToken(nextPageToken);
+    const placesResponse = await getNearbyPlacesWithToken(nextPageToken);
     return res.status(HttpStatus.OK).send({
       places: placesResponse
     });
@@ -18,7 +18,7 @@ exports.placesWithToken = async (req, res, next) => {
 
 exports.places = async (req, res, next) => {
   try {
-    const payload = await placesFetch.googleNearbyPlacesFetch(res.locals.body);
+    const payload = await getNearbyPlaces(res.locals.body);
 
     return res.status(HttpStatus.OK).send({
       places: payload
@@ -32,7 +32,7 @@ exports.placeDetails = async (req, res, next) => {
   const { place_id } = res.locals.body;
 
   try {
-    const placeDetailsResult = await placesFetch.googlePlaceDetails(place_id);
+    const placeDetailsResult = await getPlaceDetails(place_id);
 
     return res.status(HttpStatus.OK).send({
       placeDetails: {

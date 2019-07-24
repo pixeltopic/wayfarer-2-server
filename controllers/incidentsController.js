@@ -1,5 +1,5 @@
 const { IncidentsProcessor, IncidentsCache } = require("../services/IncidentsProcessor");
-const { googleDirectionsFetch } = require("../services/google/directionsFetch");
+const { google: { getDirections } } = require("../services");
 const { mapquestRadiusFetch } = require("../services/mapquest/incidentsRadiusFetch");
 const HttpStatus = require("http-status-codes");
 const ErrorWrapper = require("../utils/ErrorWrapper");
@@ -20,7 +20,7 @@ exports.incidents = async (req, res, next) => {
     logger.info("Fetching directions with search params before finding incidents:");
     logger.info(res.locals.body);
 
-    const payload = await googleDirectionsFetch(directionSearchParams);
+    const payload = await getDirections(directionSearchParams);
 
     if (!payload.getRoute()) {
       throw ErrorWrapper("Directions not found.", "incidentsController", HttpStatus.BAD_REQUEST);
