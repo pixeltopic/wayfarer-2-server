@@ -3,7 +3,7 @@ const logger = require("../../utils").logger(__filename);
 const GeoPoint = require("../GeoPoint")
 const { mapquestKey } = require("../../config");
 
-exports.mapquestRadiusFetch = async (
+const getIncidentsInRadius = async (
   distFromCenter = 3,
   units = "imperial",
   { lat, lng }
@@ -29,3 +29,7 @@ exports.mapquestRadiusFetch = async (
 
   return response.data.incidents;
 };
+
+module.exports = {
+  getIncidentsInRadius
+}

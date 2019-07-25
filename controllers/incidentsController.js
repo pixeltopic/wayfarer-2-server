@@ -1,10 +1,10 @@
 const { IncidentsProcessor, IncidentsCache } = require("../services/IncidentsProcessor");
-const { google: { getDirections } } = require("../services");
-const { mapquestRadiusFetch } = require("../services/mapquest/incidentsRadiusFetch");
+const { google: { getDirections }, mapquest: { getIncidentsInRadius } } = require("../services");
+
 const HttpStatus = require("http-status-codes");
-const ErrorWrapper = require("../utils/ErrorWrapper");
+const { ErrorWrapper, unitConversion: { convertUnitToMeters } } = require("../utils");
 const logger = require("../utils").logger(__filename);
-const { convertUnitToMeters } = require("../utils").unitConversion;
+
 
 exports.incidents = async (req, res, next) => {
   try {
@@ -38,7 +38,7 @@ exports.incidents = async (req, res, next) => {
 
     // start and end coordinates are the same, so fetch incidents around this point.
     if (startLat === endLat && startLng === endLng) {
-      const incidents = await mapquestRadiusFetch(radius, units, payload.getRoute().legs[0].start_location)
+      const incidents = await getIncidentsInRadius(radius, units, payload.getRoute().legs[0].start_location)
 
       return res.status(HttpStatus.OK).send({ 0: incidents });
     }

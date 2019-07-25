@@ -1,14 +1,14 @@
 const chai = require("chai");
 const asserttype = require("chai-asserttype");
 const chaiAsPromised = require("chai-as-promised");
-const { googleDirectionsFetch } = require("../../../services/google/directionsFetch");
+const { google: { getDirections } } = require("../../../services");
 
 chai.use(asserttype);
 chai.use(chaiAsPromised)
 
 const expect = chai.expect;
 
-describe.skip("googleDirectionsFetch()", async function() {
+describe.skip("google.getDirections", async function() {
   const searchParamsA = {
     altRoutes: true,
     avoidFerries: false,
@@ -36,23 +36,23 @@ describe.skip("googleDirectionsFetch()", async function() {
   }
 
   it("Should throw an Error due to invalid longitude.", function() {
-    expect(googleDirectionsFetch(searchParamsB)).to.be.rejectedWith(Error);
+    expect(getDirections(searchParamsB)).to.be.rejectedWith(Error);
   });
 
   it("should test it with a valid searchParams.", async function() {
-    const payload = await googleDirectionsFetch(searchParamsA);
+    const payload = await getDirections(searchParamsA);
     expect(payload.getRoutes()).to.be.array();
     expect(payload.getStartAddress()).to.be.string();
     expect(payload.getEndAddress()).to.be.string();
   });
   it("should retrieve the same result from the LRU cache.", async function() {
-    const payload = await googleDirectionsFetch(searchParamsA);
+    const payload = await getDirections(searchParamsA);
     expect(payload.getRoutes()).to.be.array();
     expect(payload.getStartAddress()).to.be.string();
     expect(payload.getEndAddress()).to.be.string();
   });
   it("should test it with a valid searchParams using currentLocation.", async function() {
-    const payload = await googleDirectionsFetch(searchParamsC);
+    const payload = await getDirections(searchParamsC);
     expect(payload.getRoutes()).to.be.array();
     expect(payload.getStartAddress()).to.be.string();
     expect(payload.getEndAddress()).to.be.string();

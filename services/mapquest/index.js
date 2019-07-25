@@ -1,1 +1,3 @@
-exports.incidentsRadiusFetch = require("./incidentsRadiusFetch");
+module.exports = {
+  ...require("./incidents")
+}
