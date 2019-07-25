@@ -1,7 +1,7 @@
 const placesController = require("../controllers/placesController");
 
 module.exports = app => {
-  app.post("/api/fetchplaces", placesController.fetchPlaces);
-  app.post("/api/fetchplacedetails", placesController.fetchPlaceDetails);
-  app.post("/api/fetchplaces/token", placesController.fetchPlacesWithToken);
+  app.post("/api/places", placesController.places);
+  app.post("/api/places/details", placesController.placeDetails);
+  app.post("/api/places/token", placesController.placesWithToken);
 }

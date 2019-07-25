@@ -16,7 +16,7 @@ const miToM = miles => {
  * @returns {Number} meters
  */
 const kmToM = kilometers => {
-  parseFloat(kilometers) * METERS_IN_KILOMETER;
+  return parseFloat(kilometers) * METERS_IN_KILOMETER;
 }
 
 /**
