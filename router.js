@@ -13,6 +13,6 @@ module.exports = app => {
 
   app.get("/api/checkauth", verifyToken, (req, res) => {
     // development route to check if user's token is still valid.
-    res.send({ message: "success" });
+    res.send({ message: "success", id: res.locals.sub });
   });
 };
