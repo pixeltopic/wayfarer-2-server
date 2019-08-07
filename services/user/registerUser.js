@@ -1,23 +1,22 @@
-const User = require("../../models/user");
-const { tokenForUser } = require("../../utils");
+const { tokenForUser, password: { hashPassword } } = require("../../utils");
+const { userdb: { findUserByEmail, createUser } } = require("../../db");
 
 const doesUserEmailExist = async email => {
   // finds a user satisfying specified email in table of all users
-  const userRecord = await User.findOne({ email }); // userRecord will be null if not found
+
+  const userRecord = await findUserByEmail(email);
 
   return !!userRecord;
 };
 
 const registerUser = async (email, password) => {
-  // user does not exist, create and save new user record
-  const userToSave = new User({
-    email,
-    password
-  });
-  await userToSave.save();
 
-  return tokenForUser(userToSave);
-};
+  const hashedPass = hashPassword(password);
+
+  const uuid = await createUser(email, hashedPass);
+
+  return tokenForUser({ id: uuid });
+}
 
 module.exports = {
   registerUser,

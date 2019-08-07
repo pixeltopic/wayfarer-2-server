@@ -10,7 +10,7 @@ exports.signin = (req, res) => {
   // run when passport finishes authenticating email/password.
   // give user a token
   // accesses user.id allowed because passport supplies a `done` callback; we returned a found user with done(null, user); access via req.user
-  res.send({ token: tokenForUser(req.user) });
+  res.send({ token: tokenForUser(res.locals.user) });
 };
 
 exports.signup = async (req, res, next) => {

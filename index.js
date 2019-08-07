@@ -1,7 +1,6 @@
 const app = require("express")();
 const http = require("http");
 const passport = require("passport");
-const mongoose = require("mongoose");
 
 // middlewares
 const bodyParser = require("body-parser");
@@ -14,46 +13,48 @@ const { validateKey, schemaValidator, errorHandler } = require("./middlewares");
 const { passport: { localLogin } } = require("./services");
 
 const router = require("./router");
-const { mongoURI, origin } = require("./config");
+const { origin } = require("./config");
 
 
-// Db setup
-mongoose.connect(mongoURI, { 
-  useNewUrlParser: true,
-  // sets how many times to try reconnecting (will be used if connection is interrupted)
-  reconnectTries: 10,
-  // sets the delay between every retry (milliseconds)
-  reconnectInterval: 1000 
-});
 
-// app.use() allows global middleware and other setting configuration
-// Instantiate morgan logging for http requests. Will write its logs to Winston.
-app.use(morgan("combined", { 
-  stream: { 
-    write: message => logger.morgan(message.trim()) 
-  }
-}));
-app.use(bodyParser.json({ type: "*/*", limit: '2mb' }));
+const initDb = async () => {
+  await require("./db").tableInit();
+}
 
-// allow requests from specific route
-app.use(cors({ origin }));
+const initApp = () => {
+  // app.use() allows global middleware and other setting configuration
+  // Instantiate morgan logging for http requests. Will write its logs to Winston.
+  app.use(morgan("combined", { 
+    stream: { 
+      write: message => logger.morgan(message.trim()) 
+    }
+  }));
+  app.use(bodyParser.json({ type: "*/*", limit: '2mb' }));
 
-// use custom middlewares
-app.use(validateKey);
-app.use(schemaValidator);
+  // allow requests from specific route
+  app.use(cors({ origin }));
 
-// connect passport jwt strategy to passport
-passport.use(localLogin);
+  // use custom middlewares
+  app.use(validateKey);
+  app.use(schemaValidator);
 
-// initialize routes
-router(app);
+  // connect passport jwt strategy to passport
+  passport.use(localLogin);
 
-// central error handler that is accessed with next callback with an Error as an argument.
-// important that this is defined after the router.
-app.use(errorHandler);
+  // initialize routes
+  router(app);
 
-// Server Setup
-const port = process.env.PORT || 3090;
-const server = http.createServer(app);
-server.listen(port);
-logger.info("Server listening on: " + port);
+  // central error handler that is accessed with next callback with an Error as an argument.
+  // important that this is defined after the router.
+  app.use(errorHandler);
+
+  // Server Setup
+  const port = process.env.PORT || 3090;
+  const server = http.createServer(app);
+  server.listen(port);
+  logger.info("Server listening on: " + port);
+}
+
+initDb().then(() => initApp()).catch(err => {
+  logger.error("Server initialization failed with err", err);
+})

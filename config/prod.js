@@ -9,5 +9,14 @@ module.exports = {
   googleRecaptchaKey: process.env.GOOGLE_RECAPTCHA_KEY, // google recaptcha secret
   mapquestKey: process.env.MAPQUEST_KEY, // mapquest incidents key
   witaiKey: process.env.WITAI_KEY,
-  enableRecaptcha: true // false if you want to use postman to make testing easier. Should always be true in prod env
+  enableRecaptcha: true, // false if you want to use postman to make testing easier. Should always be true in prod env
+  database: {
+    driver: process.env.DB_DRIVER,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS,
+    name: process.env.DB_NAME,
+    minConnections: process.env.DB_MIN_CONN,
+    maxConnections: process.env.DB_MAX_CONN,
+  },
 }
