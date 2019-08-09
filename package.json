@@ -10,7 +10,8 @@
   "scripts": {
     "test": "mocha --recursive test",
     "start": "node index.js",
-    "dev": "supervisor index.js"
+    "dev": "supervisor index.js",
+    "lint": "eslint . --ext .js"
   },
   "author": "",
   "license": "ISC",

@@ -20,7 +20,7 @@ const schemaValidator = (body, schema, errorMessage, logger) => {
   if (error) {
     logger && logger(error.message);
     throw ErrorWrapper(errorMessage || error.message.replace(/"/g, "'"), "ValidationError", HttpStatus.UNPROCESSABLE_ENTITY);
-  };
+  }
     
   return value;
 }
