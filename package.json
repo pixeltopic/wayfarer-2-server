@@ -41,6 +41,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-asserttype": "^1.0.5",
+    "eslint": "^6.1.0",
     "mocha": "^6.1.4",
     "supervisor": "^0.12.0"
   }
