@@ -12,8 +12,8 @@ const knex = Knex({
     database: database.name
   },
   pool: { 
-    min: database.minConnections, 
-    max: database.maxConnections 
+    min: Number(database.minConnections), 
+    max: Number(database.maxConnections) 
   }
 });
 
