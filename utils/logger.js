@@ -35,13 +35,13 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-module.exports = (fileName) => {
+module.exports = (fileName, dirname = "") => {
   if (!fileName) {
     logger.warn("Must specify a `__filename`. Usage: `const logger = require(logger)(__filename)`. Returning default Winston logger.");
     return logger;
   }
     
-  fileName = path.parse(fileName).base; 
+  fileName = path.parse(dirname).base + `/` + path.parse(fileName).base; 
 
   const wrappedLogger = {
       error: (message, meta) => meta ? logger.error(message, { ...meta, at: fileName }) : logger.error(message, { at: fileName }),

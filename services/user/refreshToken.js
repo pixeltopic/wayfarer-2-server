@@ -1,11 +1,7 @@
 const jwt = require("jsonwebtoken");
-const HttpStatus = require("http-status-codes");
-const mongoose = require("mongoose");
-
-const User = require("../../models/user");
+const { userdb: { findUserById } } = require("../../db");
 const { inactiveTokenTime, tokenExpiryTime, userSecret } = require("../../config");
 const logger = require("../../utils").logger(__filename);
-const { ErrorWrapper } = require("../../utils");
 
 /**
  * Decodes a given JWT or throws an error if it cannot be decoded.
@@ -26,18 +22,15 @@ const decodeJwt = token => {
 }
 
 /**
- * Attempts to find user in DB using its id and if present and returns true if exactly one user is found,
+ * Attempts to find user in DB using its id and if present and returns true if exactly one user is found.
+ * The database constraint is responsible for enforcing the uuid uniqueness.
  * @param {string} sub - user id extracted from a jwt, given by `decodeJwt`.
  */
 const doesUserIdExist = async sub => {
-  if (!mongoose.Types.ObjectId.isValid(sub)) {
-    logger.error("Provided JWT was invalid as it could not be decoded into a valid MongoDB ID. so token will not be refreshed.");
-    return false;
-  }
 
-  const userMatch = await User.countDocuments({ _id: sub });
-  // ensure that there is exactly one user matching the decoded id.
-  return userMatch === 1;
+  const userMatch = await findUserById(sub);
+  
+  return !!userMatch;
 }
 
 /**
