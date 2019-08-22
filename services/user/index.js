@@ -1,2 +1,4 @@
-exports.registerUser = require("./registerUser");
-exports.refreshToken = require("./refreshToken");
+module.exports = {
+  registerUser: require("./registerUser"),
+  refreshToken: require("./refreshToken"),
+}

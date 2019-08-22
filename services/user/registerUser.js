@@ -1,5 +1,5 @@
 const { tokenForUser, password: { hashPassword } } = require("../../utils");
-const { userdb: { findUserByEmail, createUser } } = require("../../db");
+const { userDB: { findUserByEmail, createUser } } = require("../../db");
 
 const doesUserEmailExist = async email => {
   // finds a user satisfying specified email in table of all users

@@ -1,5 +1,6 @@
 const Knex = require("knex");
 // const uuidv4 = require("uuid/v4");
+const tableSchemaInit = require("../models/db");
 const { database } = require("../config");
 const logger = require("../utils").logger(__filename, __dirname);
 
@@ -9,7 +10,15 @@ const knex = Knex({
     host: database.host,
     user: database.user,
     password: database.pass,
-    database: database.name
+    database: database.name,
+    typeCast: (field, next) => {
+      // logger.info(`TypeCasting. Type:${field.type},Length:${field.length}`);
+      if (field.type == "TINY" && field.length == 1) {
+          let value = field.string();
+          return value ? (value == '1') : null;
+      }
+      return next();
+  }
   },
   pool: { 
     min: Number(database.minConnections), 
@@ -18,23 +27,33 @@ const knex = Knex({
 });
 
 /**
+ * @param {Knex} knex 
+ * @param {string} tableName
+ * @param {function} callback
+ */
+const createTable = async (knex, tableName, callback) => {
+  const tableExists = await knex.schema.hasTable(tableName);
+
+  if (!tableExists) {
+    logger.info(`\`${tableName}\` table does not exist. Initializing.`)
+    await knex.schema.createTable(tableName, callback);
+  } else {
+    logger.warn(`\`${tableName}\` table already exists. Skipping.`);
+  }
+}
+
+/**
  * 
  * @param {Knex} knex 
  */
 const tableInit = async (knex) => {
   try {
-    const tableExists = await knex.schema.hasTable("users");
 
-    if (!tableExists) {
-      await knex.schema.createTable("users", table => {
-        table.uuid('id').primary().notNullable()
-        table.string("email", 128).notNullable();
-        table.string("password", 128).notNullable();
-        table.unique("email")
-      });
-    } else {
-      logger.warn("`users` table already exists.");
-    }
+    const schema = tableSchemaInit(knex);
+
+    await createTable(knex, "users", schema.users);
+
+    await createTable(knex, "saved_directions", schema.savedDirections)
 
     // do a test insert and select
     // await knex("users").insert({ id: uuidv4(), email: "test1@test.com", password: "mypasswordinrawtext" });
@@ -56,7 +75,8 @@ const tableInit = async (knex) => {
 
 module.exports = {
   tableInit: async () => await tableInit(knex),
-  userdb: require("./user.db")(knex),
+  userDB: require("./user.db")(knex),
+  savedDirectionsDB: require("./savedDirections.db")(knex),
 }
 
 

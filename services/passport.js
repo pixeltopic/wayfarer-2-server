@@ -1,5 +1,5 @@
 const LocalStrategy = require("passport-local");
-const { userdb: { findUserByEmail } } = require("../db");
+const { userDB: { findUserByEmail } } = require("../db");
 
 const logger = require("../utils").logger(__filename);
 const { password: { comparePassword } } = require("../utils"); 

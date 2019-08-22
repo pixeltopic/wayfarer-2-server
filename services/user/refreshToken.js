@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { userdb: { findUserById } } = require("../../db");
+const { userDB: { findUserById } } = require("../../db");
 const { inactiveTokenTime, tokenExpiryTime, userSecret } = require("../../config");
 const logger = require("../../utils").logger(__filename);
 

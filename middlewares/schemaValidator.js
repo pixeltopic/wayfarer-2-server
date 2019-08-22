@@ -1,5 +1,5 @@
 const logger = require("../utils/logger")(__filename);
-const schemas = require("../models/schemas");
+const { directions, places, incidents, user } = require("../models/schemas");
 const Joi = require("@hapi/joi");
 const ErrorWrapper = require("../utils/ErrorWrapper");
 const HttpStatus = require("http-status-codes");
@@ -35,27 +35,35 @@ module.exports = (req, res, next) => {
     switch(req.originalUrl) {
       case "/api/signup":
         errorMessage = "Valid email and password must be provided.";
-        body = schemaValidator(req.body, schemas.signupSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, user.signup, errorMessage, logger.warn);
         break;
       case "/api/directions":
         errorMessage = "Missing or invalid attributes for search. Try to refresh.";
-        body = schemaValidator(req.body, schemas.directionsSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, directions.directions, errorMessage, logger.warn);
+        break;
+      case "/api/directions/save":
+        errorMessage = "Missing or invalid attributes for saving directions.";
+        body = schemaValidator(req.body, directions.savedDirections, errorMessage, logger.warn);
+        break;
+      case "/api/directions/find":
+        errorMessage = "Invalid attributes for finding directions.";
+        body = schemaValidator(req.body, directions.findSavedDirections, errorMessage, logger.warn);
         break;
       case "/api/incidents":
         errorMessage = "Missing or invalid attributes for incident detection.";
-        body = schemaValidator(req.body, schemas.incidentsSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, incidents.incidents, errorMessage, logger.warn);
         break;
       case "/api/places":
         errorMessage = "Missing or invalid attributes to search for nearby places.";
-        body = schemaValidator(req.body, schemas.placesSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, places.places, errorMessage, logger.warn);
         break;
       case "/api/places/details":
         errorMessage = "Missing or invalid attribute to retrieve place details.";
-        body = schemaValidator(req.body, schemas.placeDetailsSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, places.placeDetails, errorMessage, logger.warn);
         break;
       case "/api/places/token":
         errorMessage = "Missing token or invalid attributes.";
-        body = schemaValidator(req.body, schemas.placesTokenSchema, errorMessage, logger.warn);
+        body = schemaValidator(req.body, places.placesToken, errorMessage, logger.warn);
         break;
       default:
         logger.warn("Route not defined in schemaValidator. Not validating JSON.")
